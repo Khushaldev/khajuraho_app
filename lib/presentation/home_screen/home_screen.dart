@@ -1,3 +1,157 @@
+import 'package:flutter/material.dart';
+
+import '../../application/user/auth/auth_service.dart';
+import '../../di/di_container.dart';
+import '../../domain/user_profile.dart';
+import '../../utils/helpers/constants.dart';
+import '../../utils/helpers/styles.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  static const String routeName = '/home';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 248, 248, 255),
+      body: const HomeBody(),
+    );
+  }
+}
+
+class HomeBody extends StatelessWidget {
+  const HomeBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            FutureBuilder<UserProfile>(
+              future: diContainer<AuthService>().getUserProfile(),
+              builder: (context, snapshot) {
+                final String? firstName = snapshot.data?.firstName;
+                return Column(
+                  children: [
+                    Padding(
+                      padding: horizontalPadding24 + verticalPadding8 + topPadding4,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.network(
+                                'https://img.icons8.com/tiny-color/16/marker.png',
+                              ),
+                              horizontalMargin8,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Home',
+                                    style: TextStyles.semiBold2,
+                                  ),
+                                  Text(
+                                    'Vpo Khera Dabar...',
+                                    style: TextStyles.regular1,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          firstName != null && firstName.isNotEmpty
+                              ? Container(
+                                  height: 32,
+                                  width: 32,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0xFFe7f5ff),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      firstName[0].toUpperCase(),
+                                      style: TextStyles.semiBold5!.copyWith(
+                                        color: const Color(0xFF1971c2),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : emptyWidget,
+                        ],
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            // const Search(),
+            // const MarketingCarousel(),
+            // RecentlyOpenedCategoryCarousel(
+            //   carouselItems: state.categories,
+            // ),
+            // CategoryPanel(
+            //   carouselItems: state.categories,
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class SearchScreen extends StatelessWidget {
+  static const String routeName = '/search';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Search Screen'),
+      ),
+      body: Center(child: Text('Search Screen Content')),
+    );
+  }
+}
+
+class ProfileScreen extends StatelessWidget {
+  static const String routeName = '/profile';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Profile Screen'),
+      ),
+      body: Center(child: Text('Profile Screen Content')),
+    );
+  }
+}
+
+class DetailsScreen extends StatelessWidget {
+  static const String routeName = '/details';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Details Screen'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text('Back to Home Screen'),
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
 // import 'dart:math';
 
 // import 'package:auto_route/auto_route.dart';
@@ -611,16 +765,3 @@
 //     );
 //   }
 // }
-
-import 'package:flutter/material.dart';
-
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
-
-  static const String routeName = '/main';
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}

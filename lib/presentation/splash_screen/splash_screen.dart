@@ -7,7 +7,7 @@ import '../../application/splash_bloc.dart';
 import '../../di/di_container.dart';
 import '../../domain/auth_state.dart';
 import '../add_user_details_page/add_user_details_page.dart';
-import '../home_page/home_page.dart';
+import '../home_screen/home_screen.dart';
 import '../sign_in_page/sign_in_page.dart';
 
 @RoutePage()
@@ -45,7 +45,7 @@ Future<void> _handleAuthenticated(
       return context.go(AddUserDetailsPage.routeName);
     }
 
-    context.replace(MainPage.routeName);
+    context.replace(HomeScreen.routeName);
   }
 }
 
