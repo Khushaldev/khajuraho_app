@@ -1,0 +1,35 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  errors:
+    invalid_annotation_target: ignore
+  exclude:
+    - "**/*.config.dart"
+    - "**/*.freezed.dart"
+    - "**/*.g.dart"
+    - "**/*.gen.dart"
+    - "**/*.gr.dart"
+    - "**/*.i69n.dart"
+
+linter:
+  rules:
+    avoid_print: true
+    prefer_single_quotes: true
+    require_trailing_commas: true
+    prefer_collection_literals: true
+    prefer_final_fields: true
+    prefer_final_in_for_each: true
+    prefer_final_locals: true
+    sized_box_for_whitespace: true
+    use_decorated_box: true
+    unnecessary_parenthesis: true
+    unnecessary_await_in_return: true
+    unnecessary_raw_strings: true
+    avoid_unnecessary_containers: true
+    avoid_redundant_argument_values: true
+    avoid_unused_constructor_parameters: true
+    always_declare_return_types: true
+    sort_constructors_first: true
+    unawaited_futures: true
+# Additional information about this file can be found at
+# https://dart.dev/guides/language/analysis-options
