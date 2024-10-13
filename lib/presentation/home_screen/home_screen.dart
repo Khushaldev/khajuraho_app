@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../application/user/auth/auth_service.dart';
 import '../../di/di_container.dart';
 import '../../domain/user_profile.dart';
-import '../../utils/helpers/colors.dart';
 import '../../utils/helpers/constants.dart';
 import '../../utils/helpers/styles.dart';
 
@@ -14,9 +13,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: fullScreenWhiteColor,
-      body: HomeBody(),
+    return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 248, 248, 255),
+      body: const HomeBody(),
     );
   }
 }
@@ -766,16 +765,3 @@ class DetailsScreen extends StatelessWidget {
 //     );
 //   }
 // }
-
-import 'package:flutter/material.dart';
-
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
-
-  static const String routeName = '/main';
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
