@@ -12,7 +12,7 @@ import '../../utils/helpers/constants.dart';
 import '../../utils/helpers/styles.dart';
 import '../../utils/widgets/atoms/input_text.dart';
 import '../../utils/widgets/tile.dart';
-import '../home_page/home_page.dart';
+import '../home_screen/home_screen.dart';
 import '../sign_in_page/sign_in_page.dart';
 
 class AddUserDetailsPage extends StatelessWidget {
@@ -130,7 +130,7 @@ class AddUserDetailsPage extends StatelessWidget {
   void _onListen(BuildContext context, AddUserDetailsState state) async {
     if (state.isSuccess) {
       if (context.mounted) {
-        context.replace(MainPage.routeName);
+        context.replace(HomeScreen.routeName);
       }
     } else if (state.hasError && state.navigateBackToSignIn) {
       await diContainer<AuthService>().signOut();

@@ -1,13 +1,11 @@
-import 'package:client_app/application/user/auth/auth_service.dart';
-import 'package:client_app/di/di_container.dart';
-import 'package:client_app/presentation/sign_in_page/sign_in_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../domain/app_store/app_store.dart';
-import '../domain/user_profile.dart';
+import '../di/di_container.dart';
 import '../presentation/add_user_details_page/add_user_details_page.dart';
-import '../presentation/home_page/home_page.dart';
+import '../presentation/home_screen/home_screen.dart';
+import '../presentation/mobile_bottom_navigation.dart';
+import '../presentation/sign_in_page/sign_in_page.dart';
 
 GoRouter generateRouter(Widget child) {
   return GoRouter(
@@ -17,7 +15,49 @@ GoRouter generateRouter(Widget child) {
       _rootRoute(child),
       _signInPageRoute(),
       _addUserDetailsPageRoute(),
-      _mainPageRoute(),
+      _mobileHomeScreenWithNavigationBarRoute(),
+    ],
+  );
+}
+
+StatefulShellRoute _mobileHomeScreenWithNavigationBarRoute() {
+  return StatefulShellRoute.indexedStack(
+    builder: (
+      BuildContext context,
+      GoRouterState state,
+      StatefulNavigationShell navigationShell,
+    ) {
+      return MobileBottomNavigation(navigationShell: navigationShell);
+    },
+    branches: <StatefulShellBranch>[
+      StatefulShellBranch(
+        routes: <RouteBase>[
+          GoRoute(
+            path: HomeScreen.routeName,
+            builder: (BuildContext context, GoRouterState state) {
+              return const HomeScreen();
+            },
+          ),
+        ],
+      ),
+      StatefulShellBranch(
+        routes: <RouteBase>[
+          GoRoute(
+            path: SearchScreen.routeName,
+            builder: (BuildContext context, GoRouterState state) {
+              return SearchScreen();
+            },
+          ),
+        ],
+      ),
+      StatefulShellBranch(
+        routes: <RouteBase>[
+          GoRoute(
+            path: ProfileScreen.routeName,
+            builder: (_, __) => ProfileScreen(),
+          ),
+        ],
+      ),
     ],
   );
 }
@@ -64,19 +104,6 @@ GoRoute _addUserDetailsPageRoute() {
     pageBuilder: (context, state) {
       return CustomTransitionPage(
         child: AddUserDetailsPage(),
-        transitionsBuilder: _buildFadeTransition,
-        transitionDuration: _slowDuration,
-      );
-    },
-  );
-}
-
-GoRoute _mainPageRoute() {
-  return GoRoute(
-    path: MainPage.routeName,
-    pageBuilder: (context, state) {
-      return CustomTransitionPage(
-        child: const MainPage(),
         transitionsBuilder: _buildFadeTransition,
         transitionDuration: _slowDuration,
       );

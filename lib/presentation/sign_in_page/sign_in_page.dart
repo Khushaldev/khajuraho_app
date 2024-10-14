@@ -15,7 +15,7 @@ import '../../utils/helpers/assets.dart';
 import '../../utils/helpers/constants.dart';
 import '../../utils/helpers/styles.dart';
 import '../add_user_details_page/add_user_details_page.dart';
-import '../home_page/home_page.dart';
+import '../home_screen/home_screen.dart';
 
 class SignInPage extends StatelessWidget {
   const SignInPage({super.key});
@@ -106,7 +106,7 @@ class SignInPage extends StatelessWidget {
           return context.replace(AddUserDetailsPage.routeName);
         }
       } else if (context.mounted) {
-        return context.replace(MainPage.routeName);
+        return context.replace(HomeScreen.routeName);
       }
     } else if (state.hasError) {
       unawaited(
