@@ -35,7 +35,7 @@ const sliverVerticalMargin32 = SliverToBoxAdapter(child: SizedBox(height: 32.0))
 const sliverVerticalMargin48 = SliverToBoxAdapter(child: SizedBox(height: 48.0));
 
 // Layout Paddings
-const horizontalPadding0 = EdgeInsets.symmetric(horizontal: 0.0);
+const horizontalPadding0 = EdgeInsets.symmetric();
 const horizontalPadding4 = EdgeInsets.symmetric(horizontal: 4.0);
 const horizontalPadding8 = EdgeInsets.symmetric(horizontal: 8.0);
 const horizontalPadding12 = EdgeInsets.symmetric(horizontal: 12.0);
@@ -44,7 +44,7 @@ const horizontalPadding24 = EdgeInsets.symmetric(horizontal: 24.0);
 const horizontalPadding32 = EdgeInsets.symmetric(horizontal: 32.0);
 const horizontalPadding48 = EdgeInsets.symmetric(horizontal: 48.0);
 
-const verticalPadding0 = EdgeInsets.symmetric(vertical: 0.0);
+const verticalPadding0 = EdgeInsets.symmetric();
 const verticalPadding2 = EdgeInsets.symmetric(vertical: 2.0);
 const verticalPadding4 = EdgeInsets.symmetric(vertical: 4.0);
 const verticalPadding8 = EdgeInsets.symmetric(vertical: 8.0);
