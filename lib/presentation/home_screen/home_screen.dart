@@ -1,9 +1,11 @@
+import 'package:client_app/domain/app_store/app_store.dart';
 import 'package:flutter/material.dart';
 
 import '../../application/user/auth/auth_service.dart';
 import '../../di/di_container.dart';
 import '../../domain/user_profile.dart';
 import '../../utils/helpers/constants.dart';
+import '../../utils/helpers/log.dart';
 import '../../utils/helpers/styles.dart';
 
 class HomeScreen extends StatelessWidget {

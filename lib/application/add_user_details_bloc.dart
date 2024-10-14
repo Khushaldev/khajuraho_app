@@ -45,6 +45,8 @@ class AddUserDetailsBloc extends Bloc<AddUserDetailsEvent, AddUserDetailsState> 
           ),
         );
 
+        await diContainer<AuthService>().getUserProfile(forceUpdate: true);
+
         return emit(state.copyWith(isSubmitting: false, isSuccess: true));
       }
 
