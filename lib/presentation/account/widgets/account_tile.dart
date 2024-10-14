@@ -1,3 +1,4 @@
+import 'package:client_app/utils/helpers/colors.dart';
 import 'package:client_app/utils/helpers/constants.dart';
 import 'package:client_app/utils/helpers/styles.dart';
 import 'package:client_app/utils/widgets/tile.dart';
@@ -17,7 +18,7 @@ class AccountTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppTile(
       title: title,
-      cardColor: Colors.white,
+      cardColor: whiteColor,
       titleSpacing: verticalMargin4,
       horizontalPadding: horizontalPadding12,
       // child: ListView.builder(

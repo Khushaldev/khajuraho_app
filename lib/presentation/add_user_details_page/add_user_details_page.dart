@@ -8,6 +8,7 @@ import '../../application/add_user_details_bloc.dart';
 import '../../application/user/auth/auth_service.dart';
 import '../../di/di_container.dart';
 import '../../utils/helpers/alerts.dart';
+import '../../utils/helpers/colors.dart';
 import '../../utils/helpers/constants.dart';
 import '../../utils/helpers/styles.dart';
 import '../../utils/widgets/atoms/input_text.dart';
@@ -107,11 +108,11 @@ class AddUserDetailsPage extends StatelessWidget {
                         },
                         child: Center(
                           child: isLoading
-                              ? const CircularProgressIndicator(color: Colors.white)
+                              ? const CircularProgressIndicator(color: whiteColor)
                               : Text(
                                   'Submit',
                                   style: TextStyles.semiBold2!.copyWith(
-                                    color: Colors.white,
+                                    color: whiteColor,
                                   ),
                                 ),
                         ),

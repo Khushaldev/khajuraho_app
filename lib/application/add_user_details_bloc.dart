@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../di/di_container.dart';
-import '../domain/app_store/app_store.dart';
 import '../domain/user_profile.dart';
 import 'services/user_service.dart';
 
@@ -54,7 +53,7 @@ class AddUserDetailsBloc extends Bloc<AddUserDetailsEvent, AddUserDetailsState> 
           isSubmitting: false,
           hasError: true,
           navigateBackToSignIn: true,
-          errorMessage: 'Can\'t update details rightnow. Please try again',
+          errorMessage: 'Can\'t update details right now. Please try again',
         ),
       );
     } catch (e) {

@@ -34,10 +34,10 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final dIAppModule = _$DIAppModule();
-    gh.factory<_i761.SplashBloc>(() => _i761.SplashBloc());
-    gh.factory<_i768.DashboardBloc>(() => _i768.DashboardBloc());
     gh.factory<_i568.SignInBloc>(() => _i568.SignInBloc());
+    gh.factory<_i761.SplashBloc>(() => _i761.SplashBloc());
     gh.factory<_i911.AddUserDetailsBloc>(() => _i911.AddUserDetailsBloc());
+    gh.factory<_i768.DashboardBloc>(() => _i768.DashboardBloc());
     gh.singleton<_i385.AppStore>(() => _i385.AppStore());
     gh.lazySingleton<_i409.GlobalKey<_i409.NavigatorState>>(
         () => dIAppModule.key);

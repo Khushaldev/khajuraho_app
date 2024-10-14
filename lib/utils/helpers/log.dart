@@ -81,7 +81,6 @@ bool isReleaseVersion() {
   return kReleaseMode;
 }
 
-// Utility to convert a message to native Utf8
 Pointer<ffi.Utf8> toNativeUtf8(dynamic msg) {
   return '$msg'.toNativeUtf8();
 }
