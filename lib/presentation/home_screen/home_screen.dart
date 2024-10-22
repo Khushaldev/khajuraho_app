@@ -1,11 +1,11 @@
-import 'package:client_app/domain/app_store/app_store.dart';
+import 'package:client_app/application/home_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../application/user/auth/auth_service.dart';
 import '../../di/di_container.dart';
 import '../../domain/user_profile.dart';
 import '../../utils/helpers/constants.dart';
-import '../../utils/helpers/log.dart';
 import '../../utils/helpers/styles.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -15,9 +15,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 248, 248, 255),
-      body: const HomeBody(),
+    return const Scaffold(
+      backgroundColor: Color.fromARGB(255, 248, 248, 255),
+      body: HomeBody(),
     );
   }
 }
@@ -29,43 +29,26 @@ class HomeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
-        child: Column(
-          children: [
-            FutureBuilder<UserProfile>(
-              future: diContainer<AuthService>().getUserProfile(),
-              builder: (context, snapshot) {
-                final String? firstName = snapshot.data?.firstName;
-                return Column(
-                  children: [
-                    Padding(
-                      padding: horizontalPadding24 + verticalPadding8 + topPadding4,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.network(
-                                'https://img.icons8.com/tiny-color/16/marker.png',
-                              ),
-                              horizontalMargin8,
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Home',
-                                    style: TextStyles.semiBold2,
-                                  ),
-                                  Text(
-                                    'Vpo Khera Dabar...',
-                                    style: TextStyles.regular1,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          firstName != null && firstName.isNotEmpty
-                              ? Container(
+        child: BlocProvider(
+          create: (context) => diContainer<HomeBloc>() //
+            ..add(const HomeEvent.init()),
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: horizontalPadding24 + verticalPadding8 + topPadding4,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const UserLocationWidget(),
+                        FutureBuilder<UserProfile>(
+                          future: diContainer<AuthService>().getUserProfile(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              final String? firstName = snapshot.requireData.firstName;
+                              if (firstName != null) {
+                                return Container(
                                   height: 32,
                                   width: 32,
                                   decoration: const BoxDecoration(
@@ -80,26 +63,66 @@ class HomeBody extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                )
-                              : emptyWidget,
-                        ],
-                      ),
+                                );
+                              }
+                            }
+                            return emptyWidget;
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              },
-            ),
-            // const Search(),
-            // const MarketingCarousel(),
-            // RecentlyOpenedCategoryCarousel(
-            //   carouselItems: state.categories,
-            // ),
-            // CategoryPanel(
-            //   carouselItems: state.categories,
-            // ),
-          ],
+                  ),
+                ],
+              ),
+
+              // const Search(),
+              // const MarketingCarousel(),
+              // RecentlyOpenedCategoryCarousel(
+              //   carouselItems: state.categories,
+              // ),
+              // CategoryPanel(
+              //   carouselItems: state.categories,
+              // ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+}
+
+class UserLocationWidget extends StatelessWidget {
+  const UserLocationWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.network(
+              'https://img.icons8.com/tiny-color/16/marker.png',
+            ),
+            horizontalMargin8,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (state.location != null) ...[
+                  Text(
+                    'Home',
+                    style: TextStyles.semiBold2,
+                  ),
+                  Text(
+                    state.location!,
+                    style: TextStyles.regular1,
+                  ),
+                ],
+              ],
+            ),
+          ],
+        );
+      },
     );
   }
 }

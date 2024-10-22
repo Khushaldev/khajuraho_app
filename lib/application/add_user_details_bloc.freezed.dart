@@ -253,7 +253,7 @@ abstract class _Submit implements AddUserDetailsEvent {
 /// @nodoc
 mixin _$AddUserDetailsState {
   bool get isSubmitting => throw _privateConstructorUsedError;
-  dynamic get isSuccess => throw _privateConstructorUsedError;
+  bool get isSuccess => throw _privateConstructorUsedError;
   bool get hasError => throw _privateConstructorUsedError;
   bool get navigateBackToSignIn => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
@@ -273,7 +273,7 @@ abstract class $AddUserDetailsStateCopyWith<$Res> {
   @useResult
   $Res call(
       {bool isSubmitting,
-      dynamic isSuccess,
+      bool isSuccess,
       bool hasError,
       bool navigateBackToSignIn,
       String? errorMessage});
@@ -295,7 +295,7 @@ class _$AddUserDetailsStateCopyWithImpl<$Res, $Val extends AddUserDetailsState>
   @override
   $Res call({
     Object? isSubmitting = null,
-    Object? isSuccess = freezed,
+    Object? isSuccess = null,
     Object? hasError = null,
     Object? navigateBackToSignIn = null,
     Object? errorMessage = freezed,
@@ -305,10 +305,10 @@ class _$AddUserDetailsStateCopyWithImpl<$Res, $Val extends AddUserDetailsState>
           ? _value.isSubmitting
           : isSubmitting // ignore: cast_nullable_to_non_nullable
               as bool,
-      isSuccess: freezed == isSuccess
+      isSuccess: null == isSuccess
           ? _value.isSuccess
           : isSuccess // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as bool,
       hasError: null == hasError
           ? _value.hasError
           : hasError // ignore: cast_nullable_to_non_nullable
@@ -335,7 +335,7 @@ abstract class _$$AddUserDetailsStateImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool isSubmitting,
-      dynamic isSuccess,
+      bool isSuccess,
       bool hasError,
       bool navigateBackToSignIn,
       String? errorMessage});
@@ -355,7 +355,7 @@ class __$$AddUserDetailsStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? isSubmitting = null,
-    Object? isSuccess = freezed,
+    Object? isSuccess = null,
     Object? hasError = null,
     Object? navigateBackToSignIn = null,
     Object? errorMessage = freezed,
@@ -365,7 +365,10 @@ class __$$AddUserDetailsStateImplCopyWithImpl<$Res>
           ? _value.isSubmitting
           : isSubmitting // ignore: cast_nullable_to_non_nullable
               as bool,
-      isSuccess: freezed == isSuccess ? _value.isSuccess! : isSuccess,
+      isSuccess: null == isSuccess
+          ? _value.isSuccess
+          : isSuccess // ignore: cast_nullable_to_non_nullable
+              as bool,
       hasError: null == hasError
           ? _value.hasError
           : hasError // ignore: cast_nullable_to_non_nullable
@@ -387,18 +390,16 @@ class __$$AddUserDetailsStateImplCopyWithImpl<$Res>
 class _$AddUserDetailsStateImpl implements _AddUserDetailsState {
   const _$AddUserDetailsStateImpl(
       {required this.isSubmitting,
-      this.isSuccess = false,
-      this.hasError = false,
+      required this.isSuccess,
+      required this.hasError,
       this.navigateBackToSignIn = false,
       this.errorMessage});
 
   @override
   final bool isSubmitting;
   @override
-  @JsonKey()
-  final dynamic isSuccess;
+  final bool isSuccess;
   @override
-  @JsonKey()
   final bool hasError;
   @override
   @JsonKey()
@@ -418,7 +419,8 @@ class _$AddUserDetailsStateImpl implements _AddUserDetailsState {
             other is _$AddUserDetailsStateImpl &&
             (identical(other.isSubmitting, isSubmitting) ||
                 other.isSubmitting == isSubmitting) &&
-            const DeepCollectionEquality().equals(other.isSuccess, isSuccess) &&
+            (identical(other.isSuccess, isSuccess) ||
+                other.isSuccess == isSuccess) &&
             (identical(other.hasError, hasError) ||
                 other.hasError == hasError) &&
             (identical(other.navigateBackToSignIn, navigateBackToSignIn) ||
@@ -428,13 +430,8 @@ class _$AddUserDetailsStateImpl implements _AddUserDetailsState {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      isSubmitting,
-      const DeepCollectionEquality().hash(isSuccess),
-      hasError,
-      navigateBackToSignIn,
-      errorMessage);
+  int get hashCode => Object.hash(runtimeType, isSubmitting, isSuccess,
+      hasError, navigateBackToSignIn, errorMessage);
 
   /// Create a copy of AddUserDetailsState
   /// with the given fields replaced by the non-null parameter values.
@@ -449,15 +446,15 @@ class _$AddUserDetailsStateImpl implements _AddUserDetailsState {
 abstract class _AddUserDetailsState implements AddUserDetailsState {
   const factory _AddUserDetailsState(
       {required final bool isSubmitting,
-      final dynamic isSuccess,
-      final bool hasError,
+      required final bool isSuccess,
+      required final bool hasError,
       final bool navigateBackToSignIn,
       final String? errorMessage}) = _$AddUserDetailsStateImpl;
 
   @override
   bool get isSubmitting;
   @override
-  dynamic get isSuccess;
+  bool get isSuccess;
   @override
   bool get hasError;
   @override
