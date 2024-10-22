@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../di/di_container.dart';
+import '../domain/taxonomy.dart';
+import '../presentation/account/account_page.dart';
 import '../presentation/add_user_details_page/add_user_details_page.dart';
+import '../presentation/taxonomy_screen/screens/taxonomy_item_listing_screen.dart';
+import '../presentation/taxonomy_screen/taxonomy_children_screen.dart';
 import '../presentation/home_screen/home_screen.dart';
 import '../presentation/mobile_bottom_navigation.dart';
 import '../presentation/sign_in_page/sign_in_page.dart';
@@ -38,6 +42,26 @@ StatefulShellRoute _mobileHomeScreenWithNavigationBarRoute() {
               return const HomeScreen();
             },
           ),
+          GoRoute(
+            path: TaxonomyChildrenScreen.routeName,
+            builder: (BuildContext context, GoRouterState state) {
+              final args = state.extra as Map<String, dynamic>;
+              final String? taxonomyId = args[TaxonomyChildrenScreen.taxonomyIdKey];
+              final Taxonomy? taxonomy = args[TaxonomyChildrenScreen.taxonomyObjectKey];
+              return TaxonomyChildrenScreen(
+                taxonomyId: taxonomyId!,
+                taxonomy: taxonomy!,
+              );
+            },
+          ),
+          GoRoute(
+            path: TaxonomyItemListingScreen.routeName,
+            builder: (BuildContext context, GoRouterState state) {
+              final args = state.extra as Map<String, dynamic>;
+              final String? taxonomyId = args[TaxonomyItemListingScreen.taxonomyIdKey];
+              return TaxonomyItemListingScreen(taxonomyId: taxonomyId!);
+            },
+          ),
         ],
       ),
       StatefulShellBranch(
@@ -53,8 +77,8 @@ StatefulShellRoute _mobileHomeScreenWithNavigationBarRoute() {
       StatefulShellBranch(
         routes: <RouteBase>[
           GoRoute(
-            path: ProfileScreen.routeName,
-            builder: (_, __) => ProfileScreen(),
+            path: AccountPage.routeName,
+            builder: (_, __) => const AccountPage(),
           ),
         ],
       ),

@@ -172,6 +172,9 @@ abstract class Init implements HomeEvent {
 mixin _$HomeState {
   bool get isLoading => throw _privateConstructorUsedError;
   bool get hasError => throw _privateConstructorUsedError;
+  List<Map<String, dynamic>> get carouselItems =>
+      throw _privateConstructorUsedError;
+  List<Taxonomy> get taxonomies => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
@@ -186,7 +189,12 @@ abstract class $HomeStateCopyWith<$Res> {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) then) =
       _$HomeStateCopyWithImpl<$Res, HomeState>;
   @useResult
-  $Res call({bool isLoading, bool hasError, String? errorMessage});
+  $Res call(
+      {bool isLoading,
+      bool hasError,
+      List<Map<String, dynamic>> carouselItems,
+      List<Taxonomy> taxonomies,
+      String? errorMessage});
 }
 
 /// @nodoc
@@ -206,6 +214,8 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   $Res call({
     Object? isLoading = null,
     Object? hasError = null,
+    Object? carouselItems = null,
+    Object? taxonomies = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_value.copyWith(
@@ -217,6 +227,14 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.hasError
           : hasError // ignore: cast_nullable_to_non_nullable
               as bool,
+      carouselItems: null == carouselItems
+          ? _value.carouselItems
+          : carouselItems // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, dynamic>>,
+      taxonomies: null == taxonomies
+          ? _value.taxonomies
+          : taxonomies // ignore: cast_nullable_to_non_nullable
+              as List<Taxonomy>,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -233,7 +251,12 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       __$$HomeStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({bool isLoading, bool hasError, String? errorMessage});
+  $Res call(
+      {bool isLoading,
+      bool hasError,
+      List<Map<String, dynamic>> carouselItems,
+      List<Taxonomy> taxonomies,
+      String? errorMessage});
 }
 
 /// @nodoc
@@ -251,6 +274,8 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   $Res call({
     Object? isLoading = null,
     Object? hasError = null,
+    Object? carouselItems = null,
+    Object? taxonomies = null,
     Object? errorMessage = freezed,
   }) {
     return _then(_$HomeStateImpl(
@@ -262,6 +287,14 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.hasError
           : hasError // ignore: cast_nullable_to_non_nullable
               as bool,
+      carouselItems: null == carouselItems
+          ? _value._carouselItems
+          : carouselItems // ignore: cast_nullable_to_non_nullable
+              as List<Map<String, dynamic>>,
+      taxonomies: null == taxonomies
+          ? _value._taxonomies
+          : taxonomies // ignore: cast_nullable_to_non_nullable
+              as List<Taxonomy>,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -274,7 +307,13 @@ class __$$HomeStateImplCopyWithImpl<$Res>
 
 class _$HomeStateImpl implements _HomeState {
   const _$HomeStateImpl(
-      {this.isLoading = false, this.hasError = false, this.errorMessage});
+      {this.isLoading = false,
+      this.hasError = false,
+      final List<Map<String, dynamic>> carouselItems = const [],
+      final List<Taxonomy> taxonomies = const <Taxonomy>[],
+      this.errorMessage})
+      : _carouselItems = carouselItems,
+        _taxonomies = taxonomies;
 
   @override
   @JsonKey()
@@ -282,12 +321,30 @@ class _$HomeStateImpl implements _HomeState {
   @override
   @JsonKey()
   final bool hasError;
+  final List<Map<String, dynamic>> _carouselItems;
+  @override
+  @JsonKey()
+  List<Map<String, dynamic>> get carouselItems {
+    if (_carouselItems is EqualUnmodifiableListView) return _carouselItems;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_carouselItems);
+  }
+
+  final List<Taxonomy> _taxonomies;
+  @override
+  @JsonKey()
+  List<Taxonomy> get taxonomies {
+    if (_taxonomies is EqualUnmodifiableListView) return _taxonomies;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_taxonomies);
+  }
+
   @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'HomeState(isLoading: $isLoading, hasError: $hasError, errorMessage: $errorMessage)';
+    return 'HomeState(isLoading: $isLoading, hasError: $hasError, carouselItems: $carouselItems, taxonomies: $taxonomies, errorMessage: $errorMessage)';
   }
 
   @override
@@ -299,13 +356,22 @@ class _$HomeStateImpl implements _HomeState {
                 other.isLoading == isLoading) &&
             (identical(other.hasError, hasError) ||
                 other.hasError == hasError) &&
+            const DeepCollectionEquality()
+                .equals(other._carouselItems, _carouselItems) &&
+            const DeepCollectionEquality()
+                .equals(other._taxonomies, _taxonomies) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, isLoading, hasError, errorMessage);
+  int get hashCode => Object.hash(
+      runtimeType,
+      isLoading,
+      hasError,
+      const DeepCollectionEquality().hash(_carouselItems),
+      const DeepCollectionEquality().hash(_taxonomies),
+      errorMessage);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -320,12 +386,18 @@ abstract class _HomeState implements HomeState {
   const factory _HomeState(
       {final bool isLoading,
       final bool hasError,
+      final List<Map<String, dynamic>> carouselItems,
+      final List<Taxonomy> taxonomies,
       final String? errorMessage}) = _$HomeStateImpl;
 
   @override
   bool get isLoading;
   @override
   bool get hasError;
+  @override
+  List<Map<String, dynamic>> get carouselItems;
+  @override
+  List<Taxonomy> get taxonomies;
   @override
   String? get errorMessage;
 

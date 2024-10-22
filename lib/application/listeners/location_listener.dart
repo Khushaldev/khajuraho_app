@@ -3,55 +3,81 @@ import 'package:geocoding/geocoding.dart';
 import 'package:injectable/injectable.dart';
 import 'package:location/location.dart' as l;
 
-import '../../utils/helpers/log.dart';
-
 @singleton
 class LocationListener {
   LocationListener();
 
-  bool _serviceEnabled = false;
-  l.LocationData? _locationData;
-  late l.PermissionStatus _permissionGranted;
+//------------------------------------------------------------------------------
 
   final l.Location location = l.Location();
 
-  final StreamController<l.LocationData?> _locationDataStreamController =
+  bool _serviceEnabled = false;
+
+  l.LocationData? _locationData;
+
+  late l.PermissionStatus _permissionGranted;
+
+  StreamSubscription<l.LocationData?>? _locationsubscription;
+
+  StreamController<l.LocationData?> _locationDataStreamController =
       StreamController<l.LocationData?>.broadcast();
 
-  Stream<l.LocationData?> get locationDataStream => //
-      _locationDataStreamController.stream;
-
-  final StreamController<String?> _currentLocationController =
+  StreamController<String?> _currentLocationController = //
       StreamController<String?>.broadcast();
 
-  Stream<String?> get currentLocationStream => _currentLocationController.stream;
+  Stream<l.LocationData?> get locationDataStream {
+    return _locationDataStreamController.stream;
+  }
+
+  Stream<String?> get currentLocationStream {
+    return _currentLocationController.stream;
+  }
+
+//------------------------------------------------------------------------------
 
   Future<void> start() async {
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
-        return; // If service is still disabled, exit
-      }
-    }
+    _locationDataStreamController = StreamController<l.LocationData?>.broadcast();
+    _currentLocationController = StreamController<String?>.broadcast();
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == l.PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != l.PermissionStatus.granted) {
-        return;
-      }
-    }
+    final bool hasLocationPermission = await _checkPermission();
+
+    if (!hasLocationPermission) return;
 
     _locationData = await location.getLocation();
     if (_locationData != null) {
       _updateCurrentLocation(_locationData!);
     }
 
-    location.onLocationChanged.listen((l.LocationData locationData) async {
+    _locationsubscription = location.onLocationChanged.listen((
+      l.LocationData locationData,
+    ) async {
       _updateCurrentLocation(locationData);
     });
   }
+
+//------------------------------------------------------------------------------
+
+  Future<bool> _checkPermission() async {
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      // If service is still disabled, return falses
+      if (!_serviceEnabled) return false;
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == l.PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      // If permission is still not granted, return false
+      if (_permissionGranted != l.PermissionStatus.granted) return false;
+    }
+
+    if (_permissionGranted == l.PermissionStatus.granted) return true;
+
+    return false;
+  }
+
+//------------------------------------------------------------------------------
 
   void _updateCurrentLocation(l.LocationData locationData) async {
     final double? latitude = locationData.latitude;
@@ -64,28 +90,39 @@ class LocationListener {
       );
 
       if (placemarks.isNotEmpty) {
-        final firstPlacemark = placemarks.first;
-        if (firstPlacemark.locality != null &&
-            firstPlacemark.street != null &&
-            firstPlacemark.country != null &&
-            firstPlacemark.subLocality != null &&
-            firstPlacemark.administrativeArea != null) {
-          final location = [
-            if (firstPlacemark.street!.isNotEmpty) firstPlacemark.street,
-            if (firstPlacemark.subLocality!.isNotEmpty) firstPlacemark.subLocality,
-            if (firstPlacemark.locality!.isNotEmpty) firstPlacemark.locality,
-            if (firstPlacemark.administrativeArea!.isNotEmpty) firstPlacemark.administrativeArea,
-          ].join(', ');
+        final placemark = placemarks.first;
+        // if (placemark.locality != null &&
+        //     placemark.street != null &&
+        //     placemark.country != null &&
+        //     placemark.subLocality != null &&
+        //     placemark.administrativeArea != null) {
+        //   final location = [
+        //     if (placemark.street!.isNotEmpty) placemark.street,
+        //     if (placemark.subLocality!.isNotEmpty) placemark.subLocality,
+        //     if (placemark.locality!.isNotEmpty) placemark.locality,
+        //     if (placemark.administrativeArea!.isNotEmpty) placemark.administrativeArea,
+        //   ].join(', ');
+        // }
 
-          Log.info(location);
-          _currentLocationController.add(location);
-          _locationDataStreamController.add(locationData);
-        }
+        final location = [
+          placemark.street,
+          placemark.subLocality,
+          placemark.locality,
+          placemark.administrativeArea,
+        ].where((e) => e?.isNotEmpty ?? false).join(', ');
+
+        _currentLocationController.add(location);
+        _locationDataStreamController.add(locationData);
       }
     }
   }
 
-  void dispose() {
-    _locationDataStreamController.close();
+  Future<void> stop() async {
+    await Future.wait([
+      _locationDataStreamController.close(),
+      _currentLocationController.close(),
+    ]);
+
+    await _locationsubscription?.cancel();
   }
 }

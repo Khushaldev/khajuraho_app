@@ -12,6 +12,8 @@ import 'package:client_app/application/add_user_details_bloc.dart' as _i911;
 import 'package:client_app/application/home_bloc.dart' as _i865;
 import 'package:client_app/application/listeners/location_listener.dart'
     as _i910;
+import 'package:client_app/application/listeners/user_profile_listener.dart'
+    as _i615;
 import 'package:client_app/application/splash_bloc.dart' as _i761;
 import 'package:client_app/application/user/auth/bloc/sign_in_bloc.dart'
     as _i568;
@@ -42,6 +44,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i761.SplashBloc>(() => _i761.SplashBloc());
     gh.factory<_i911.AddUserDetailsBloc>(() => _i911.AddUserDetailsBloc());
     gh.factory<_i760.DashboardBloc>(() => _i760.DashboardBloc());
+    gh.singleton<_i615.UserProfileListener>(() => _i615.UserProfileListener());
     gh.singleton<_i910.LocationListener>(() => _i910.LocationListener());
     gh.singleton<_i385.AppStore>(() => _i385.AppStore());
     gh.lazySingleton<_i409.GlobalKey<_i409.NavigatorState>>(

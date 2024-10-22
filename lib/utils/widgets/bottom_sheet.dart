@@ -1,13 +1,16 @@
+import 'package:client_app/utils/helpers/colors.dart';
 import 'package:flutter/material.dart';
 
 Future<T?> bottomSheetHelper<T>(
   BuildContext context,
-  WidgetBuilder builder,
-) async {
-  return await showModalBottomSheet<T>(
+  WidgetBuilder builder, {
+  Color backgroundColor = whiteColor,
+}) async {
+  final modalSheet = await showModalBottomSheet<T>(
     context: context,
     builder: builder,
-    useSafeArea: false,
-    backgroundColor: Colors.white,
+    backgroundColor: backgroundColor,
   );
+
+  return modalSheet;
 }

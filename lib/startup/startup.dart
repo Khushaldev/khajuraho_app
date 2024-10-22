@@ -33,7 +33,7 @@ class KhajurahoRunner {
       Log.enableFlutterLog();
     }
 
-    if (diContainer.isRegistered(instance: AppLauncher)) {
+    if (diContainer.isRegistered<AppLauncher>(instance: AppLauncher)) {
       await diContainer<AppLauncher>().dispose();
     }
 
@@ -50,6 +50,7 @@ class KhajurahoRunner {
         const InitAppWidget(),
       ],
     );
+
     await launcher.launch();
 
     return;

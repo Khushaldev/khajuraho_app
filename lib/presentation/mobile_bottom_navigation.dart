@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-const _bottomNavigationItems = [
+import '../utils/helpers/colors.dart';
+
+const _bottomNavigationItems = <BottomNavigationBarItem>[
   BottomNavigationBarItem(
     icon: Icon(Icons.home),
     label: 'Home',
@@ -28,9 +30,10 @@ class MobileBottomNavigation extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: navigationShell,
+      backgroundColor: fullScreenWhiteColor,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
-        onTap: (index) {
+        onTap: (int index) {
           navigationShell.goBranch(
             index,
             initialLocation: index == navigationShell.currentIndex,
