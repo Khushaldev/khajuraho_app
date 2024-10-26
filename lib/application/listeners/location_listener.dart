@@ -1,22 +1,30 @@
 import 'dart:async';
+import 'package:geocoding/geocoding.dart';
 import 'package:injectable/injectable.dart';
-import 'package:location/location.dart';
+import 'package:location/location.dart' as l;
+
+import '../../utils/helpers/log.dart';
 
 @singleton
-class LocationPermissionService {
-  LocationPermissionService();
+class LocationListener {
+  LocationListener();
 
   bool _serviceEnabled = false;
-  LocationData? _locationData;
-  late PermissionStatus _permissionGranted;
+  l.LocationData? _locationData;
+  late l.PermissionStatus _permissionGranted;
 
-  final Location location = Location();
+  final l.Location location = l.Location();
 
-  final StreamController<LocationData?> _locationDataStreamController =
-      StreamController<LocationData?>.broadcast();
+  final StreamController<l.LocationData?> _locationDataStreamController =
+      StreamController<l.LocationData?>.broadcast();
 
-  Stream<LocationData?> get locationDataStream => //
+  Stream<l.LocationData?> get locationDataStream => //
       _locationDataStreamController.stream;
+
+  final StreamController<String?> _currentLocationController =
+      StreamController<String?>.broadcast();
+
+  Stream<String?> get currentLocationStream => _currentLocationController.stream;
 
   Future<void> start() async {
     _serviceEnabled = await location.serviceEnabled();
@@ -28,19 +36,53 @@ class LocationPermissionService {
     }
 
     _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
+    if (_permissionGranted == l.PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+      if (_permissionGranted != l.PermissionStatus.granted) {
         return;
       }
     }
 
     _locationData = await location.getLocation();
-    _locationDataStreamController.add(_locationData);
+    if (_locationData != null) {
+      _updateCurrentLocation(_locationData!);
+    }
 
-    location.onLocationChanged.listen((LocationData locationData) {
-      _locationDataStreamController.add(locationData);
+    location.onLocationChanged.listen((l.LocationData locationData) async {
+      _updateCurrentLocation(locationData);
     });
+  }
+
+  void _updateCurrentLocation(l.LocationData locationData) async {
+    final double? latitude = locationData.latitude;
+    final double? longitude = locationData.longitude;
+
+    if (latitude != null && longitude != null) {
+      final List<Placemark> placemarks = await placemarkFromCoordinates(
+        latitude,
+        longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        final firstPlacemark = placemarks.first;
+        if (firstPlacemark.locality != null &&
+            firstPlacemark.street != null &&
+            firstPlacemark.country != null &&
+            firstPlacemark.subLocality != null &&
+            firstPlacemark.administrativeArea != null) {
+          final location = [
+            if (firstPlacemark.street!.isNotEmpty) firstPlacemark.street,
+            if (firstPlacemark.subLocality!.isNotEmpty) firstPlacemark.subLocality,
+            if (firstPlacemark.locality!.isNotEmpty) firstPlacemark.locality,
+            if (firstPlacemark.administrativeArea!.isNotEmpty) firstPlacemark.administrativeArea,
+          ].join(', ');
+
+          Log.info(location);
+          _currentLocationController.add(location);
+          _locationDataStreamController.add(locationData);
+        }
+      }
+    }
   }
 
   void dispose() {

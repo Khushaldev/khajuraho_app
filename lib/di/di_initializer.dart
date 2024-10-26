@@ -3,6 +3,6 @@ import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 @InjectableInit()
-GetIt initDI(GetIt getIt, String environment) {
+Future<GetIt> initDI(GetIt getIt, String environment) async {
   return getIt.init(environment: environment);
 }

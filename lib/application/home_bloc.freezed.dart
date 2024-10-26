@@ -172,7 +172,6 @@ abstract class Init implements HomeEvent {
 mixin _$HomeState {
   bool get isLoading => throw _privateConstructorUsedError;
   bool get hasError => throw _privateConstructorUsedError;
-  String? get location => throw _privateConstructorUsedError;
   String? get errorMessage => throw _privateConstructorUsedError;
 
   /// Create a copy of HomeState
@@ -187,8 +186,7 @@ abstract class $HomeStateCopyWith<$Res> {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) then) =
       _$HomeStateCopyWithImpl<$Res, HomeState>;
   @useResult
-  $Res call(
-      {bool isLoading, bool hasError, String? location, String? errorMessage});
+  $Res call({bool isLoading, bool hasError, String? errorMessage});
 }
 
 /// @nodoc
@@ -208,7 +206,6 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
   $Res call({
     Object? isLoading = null,
     Object? hasError = null,
-    Object? location = freezed,
     Object? errorMessage = freezed,
   }) {
     return _then(_value.copyWith(
@@ -220,10 +217,6 @@ class _$HomeStateCopyWithImpl<$Res, $Val extends HomeState>
           ? _value.hasError
           : hasError // ignore: cast_nullable_to_non_nullable
               as bool,
-      location: freezed == location
-          ? _value.location
-          : location // ignore: cast_nullable_to_non_nullable
-              as String?,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -240,8 +233,7 @@ abstract class _$$HomeStateImplCopyWith<$Res>
       __$$HomeStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {bool isLoading, bool hasError, String? location, String? errorMessage});
+  $Res call({bool isLoading, bool hasError, String? errorMessage});
 }
 
 /// @nodoc
@@ -259,7 +251,6 @@ class __$$HomeStateImplCopyWithImpl<$Res>
   $Res call({
     Object? isLoading = null,
     Object? hasError = null,
-    Object? location = freezed,
     Object? errorMessage = freezed,
   }) {
     return _then(_$HomeStateImpl(
@@ -271,10 +262,6 @@ class __$$HomeStateImplCopyWithImpl<$Res>
           ? _value.hasError
           : hasError // ignore: cast_nullable_to_non_nullable
               as bool,
-      location: freezed == location
-          ? _value.location
-          : location // ignore: cast_nullable_to_non_nullable
-              as String?,
       errorMessage: freezed == errorMessage
           ? _value.errorMessage
           : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -287,10 +274,7 @@ class __$$HomeStateImplCopyWithImpl<$Res>
 
 class _$HomeStateImpl implements _HomeState {
   const _$HomeStateImpl(
-      {this.isLoading = false,
-      this.hasError = false,
-      this.location,
-      this.errorMessage});
+      {this.isLoading = false, this.hasError = false, this.errorMessage});
 
   @override
   @JsonKey()
@@ -299,13 +283,11 @@ class _$HomeStateImpl implements _HomeState {
   @JsonKey()
   final bool hasError;
   @override
-  final String? location;
-  @override
   final String? errorMessage;
 
   @override
   String toString() {
-    return 'HomeState(isLoading: $isLoading, hasError: $hasError, location: $location, errorMessage: $errorMessage)';
+    return 'HomeState(isLoading: $isLoading, hasError: $hasError, errorMessage: $errorMessage)';
   }
 
   @override
@@ -317,15 +299,13 @@ class _$HomeStateImpl implements _HomeState {
                 other.isLoading == isLoading) &&
             (identical(other.hasError, hasError) ||
                 other.hasError == hasError) &&
-            (identical(other.location, location) ||
-                other.location == location) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, isLoading, hasError, location, errorMessage);
+      Object.hash(runtimeType, isLoading, hasError, errorMessage);
 
   /// Create a copy of HomeState
   /// with the given fields replaced by the non-null parameter values.
@@ -340,15 +320,12 @@ abstract class _HomeState implements HomeState {
   const factory _HomeState(
       {final bool isLoading,
       final bool hasError,
-      final String? location,
       final String? errorMessage}) = _$HomeStateImpl;
 
   @override
   bool get isLoading;
   @override
   bool get hasError;
-  @override
-  String? get location;
   @override
   String? get errorMessage;
 

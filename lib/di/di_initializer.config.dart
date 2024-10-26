@@ -42,8 +42,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i761.SplashBloc>(() => _i761.SplashBloc());
     gh.factory<_i911.AddUserDetailsBloc>(() => _i911.AddUserDetailsBloc());
     gh.factory<_i760.DashboardBloc>(() => _i760.DashboardBloc());
-    gh.singleton<_i910.LocationPermissionService>(
-        () => _i910.LocationPermissionService());
+    gh.singleton<_i910.LocationListener>(() => _i910.LocationListener());
     gh.singleton<_i385.AppStore>(() => _i385.AppStore());
     gh.lazySingleton<_i409.GlobalKey<_i409.NavigatorState>>(
         () => dIAppModule.key);

@@ -1,7 +1,8 @@
-import 'package:client_app/application/home_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../application/home_bloc.dart';
+import '../../application/listeners/location_listener.dart';
 import '../../application/user/auth/auth_service.dart';
 import '../../di/di_container.dart';
 import '../../domain/user_profile.dart';
@@ -15,9 +16,12 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color.fromARGB(255, 248, 248, 255),
-      body: HomeBody(),
+    return BlocProvider(
+      create: (context) => diContainer<HomeBloc>()..add(const HomeEvent.init()),
+      child: const Scaffold(
+        backgroundColor: Color.fromARGB(255, 248, 248, 255),
+        body: HomeBody(),
+      ),
     );
   }
 }
@@ -27,66 +31,44 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       child: SingleChildScrollView(
-        child: BlocProvider(
-          create: (context) => diContainer<HomeBloc>() //
-            ..add(const HomeEvent.init()),
-          child: Column(
-            children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: horizontalPadding24 + verticalPadding8 + topPadding4,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const UserLocationWidget(),
-                        FutureBuilder<UserProfile>(
-                          future: diContainer<AuthService>().getUserProfile(),
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              final String? firstName = snapshot.requireData.firstName;
-                              if (firstName != null) {
-                                return Container(
-                                  height: 32,
-                                  width: 32,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFe7f5ff),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      firstName[0].toUpperCase(),
-                                      style: TextStyles.semiBold5!.copyWith(
-                                        color: const Color(0xFF1971c2),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-                            }
-                            return emptyWidget;
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+        child: Column(
+          children: [
+            HomePageAppBarSection(),
+            // const Search(),
+            // const MarketingCarousel(),
+            // RecentlyOpenedCategoryCarousel(
+            //   carouselItems: state.categories,
+            // ),
+            // CategoryPanel(
+            //   carouselItems: state.categories,
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-              // const Search(),
-              // const MarketingCarousel(),
-              // RecentlyOpenedCategoryCarousel(
-              //   carouselItems: state.categories,
-              // ),
-              // CategoryPanel(
-              //   carouselItems: state.categories,
-              // ),
+class HomePageAppBarSection extends StatelessWidget {
+  const HomePageAppBarSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: horizontalPadding24 + verticalPadding8 + topPadding4,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              UserLocationWidget(),
+              NameInitialBadge(),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -98,30 +80,77 @@ class UserLocationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.network(
-              'https://img.icons8.com/tiny-color/16/marker.png',
-            ),
-            horizontalMargin8,
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        return StreamBuilder<String?>(
+          stream: diContainer<LocationListener>().currentLocationStream,
+          builder: (context, snapshot) {
+            final String? currentLocation = snapshot.data;
+            if (!snapshot.hasData || currentLocation == null || snapshot.hasError) {
+              return emptyWidget;
+            }
+
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (state.location != null) ...[
-                  Text(
-                    'Home',
-                    style: TextStyles.semiBold2,
-                  ),
-                  Text(
-                    state.location!,
-                    style: TextStyles.regular1,
-                  ),
-                ],
+                Image.network(
+                  'https://img.icons8.com/tiny-color/16/marker.png',
+                ),
+                horizontalMargin8,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Home',
+                      style: TextStyles.semiBold2,
+                    ),
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        currentLocation,
+                        style: TextStyles.regular1,
+                        overflow: TextOverflow.clip,
+                      ),
+                    ),
+                  ],
+                ),
               ],
-            ),
-          ],
+            );
+          },
         );
+      },
+    );
+  }
+}
+
+class NameInitialBadge extends StatelessWidget {
+  const NameInitialBadge({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<UserProfile>(
+      future: diContainer<AuthService>().getUserProfile(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final String? firstName = snapshot.requireData.firstName;
+          if (firstName != null) {
+            return Container(
+              height: 32,
+              width: 32,
+              decoration: const BoxDecoration(
+                color: Color(0xFFe7f5ff),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  firstName[0].toUpperCase(),
+                  style: TextStyles.semiBold5!.copyWith(
+                    color: const Color(0xFF1971c2),
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+        return emptyWidget;
       },
     );
   }

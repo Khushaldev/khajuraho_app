@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:location/location.dart';
 
 import '../application/user/auth/auth_service.dart';
 import '../application/user/auth/firebase_auth_service.dart';
@@ -109,7 +108,7 @@ Future<void> initDi(EntryPoint entryPoint) async {
     },
   );
 
-  initDI(diContainer, Environment.dev);
+  await initDI(diContainer, Environment.dev);
 
   switch (Env.authServiceProvider) {
     case AuthServiceProvider.firebase:
@@ -118,8 +117,4 @@ Future<void> initDi(EntryPoint entryPoint) async {
       );
       break;
   }
-
-  diContainer.registerFactory<Location>(
-    () => Location(),
-  );
 }
