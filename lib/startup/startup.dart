@@ -1,17 +1,17 @@
-import 'package:client_app/application/user/auth/firebase_auth_service.dart';
-import 'package:client_app/di/di_container.dart';
-import 'package:client_app/di/di_initializer.dart';
-import 'package:client_app/startup/app_widget.dart';
-import 'package:client_app/startup/entry_point.dart';
-import 'package:client_app/startup/firebase.dart';
-import 'package:client_app/startup/localization.dart';
-import 'package:client_app/utils/helpers/log.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 
 import '../application/user/auth/auth_service.dart';
+import '../application/user/auth/firebase_auth_service.dart';
+import '../di/di_container.dart';
+import '../di/di_initializer.dart';
 import '../env/env.dart';
+import '../utils/helpers/log.dart';
+import 'app_widget.dart';
+import 'entry_point.dart';
+import 'firebase.dart';
+import 'localization.dart';
 
 abstract class EntryPoint {
   Widget create();
@@ -108,7 +108,7 @@ Future<void> initDi(EntryPoint entryPoint) async {
     },
   );
 
-  initDI(diContainer, Environment.dev);
+  await initDI(diContainer, Environment.dev);
 
   switch (Env.authServiceProvider) {
     case AuthServiceProvider.firebase:

@@ -30,7 +30,7 @@ class AddUserDetailsBloc extends Bloc<AddUserDetailsEvent, AddUserDetailsState> 
     String firstName,
     String lastName,
   ) async {
-    emit(state.copyWith(isSubmitting: true, hasError: false));
+    emit(AddUserDetailsState.initial());
 
     final UserProfile userProfile = await diContainer<AuthService>() //
         .getUserProfile();
@@ -47,24 +47,18 @@ class AddUserDetailsBloc extends Bloc<AddUserDetailsEvent, AddUserDetailsState> 
 
         await diContainer<AuthService>().getUserProfile(forceUpdate: true);
 
-        return emit(state.copyWith(isSubmitting: false, isSuccess: true));
+        return emit(AddUserDetailsState.success());
       }
 
       emit(
-        state.copyWith(
-          isSubmitting: false,
-          hasError: true,
-          navigateBackToSignIn: true,
-          errorMessage: 'Can\'t update details right now. Please try again',
+        AddUserDetailsState.error(
+          'Can\'t update details right now. Please try again',
         ),
       );
     } catch (e) {
       emit(
-        state.copyWith(
-          isSubmitting: false,
-          hasError: true,
-          navigateBackToSignIn: true,
-          errorMessage: 'Something went wrong, please try again',
+        AddUserDetailsState.error(
+          'Something went wrong, please try again',
         ),
       );
     }
@@ -83,13 +77,29 @@ class AddUserDetailsEvent with _$AddUserDetailsEvent {
 class AddUserDetailsState with _$AddUserDetailsState {
   const factory AddUserDetailsState({
     required bool isSubmitting,
-    @Default(false) isSuccess,
-    @Default(false) bool hasError,
+    required bool isSuccess,
+    required bool hasError,
     @Default(false) bool navigateBackToSignIn,
     String? errorMessage,
   }) = _AddUserDetailsState;
 
   factory AddUserDetailsState.initial() => const AddUserDetailsState(
         isSubmitting: false,
+        isSuccess: false,
+        hasError: false,
+      );
+
+  factory AddUserDetailsState.success() => const AddUserDetailsState(
+        isSubmitting: false,
+        isSuccess: true,
+        hasError: false,
+      );
+
+  factory AddUserDetailsState.error(String errorMessage) => AddUserDetailsState(
+        isSubmitting: false,
+        isSuccess: false,
+        hasError: true,
+        navigateBackToSignIn: true,
+        errorMessage: errorMessage,
       );
 }
