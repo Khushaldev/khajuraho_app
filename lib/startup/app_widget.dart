@@ -20,6 +20,7 @@ class InitAppWidget implements LaunchObjects {
     final widget = diContainer<EntryPoint>().create();
 
     final app = ApplicationWidget(
+      key: UniqueKey(),
       child: widget,
     );
 
@@ -124,6 +125,17 @@ class AppGlobals {
 }
 
 class ApplicationBlocObserver extends BlocObserver {
+  @override
+  void onCreate(BlocBase<dynamic> bloc) {
+    super.onCreate(bloc);
+  }
+
+  @override
+  void onClose(BlocBase<dynamic> bloc) {
+    // Log.debug('Bloc ${bloc.runtimeType} is closed');
+    super.onClose(bloc);
+  }
+
   @override
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     Log.error(error.toString());

@@ -1,192 +1,238 @@
-// import 'package:client_app/di/di_container.dart';
-// import 'package:client_app/navigator/navigator.dart';
-// import 'package:client_app/utils/helpers/constants.dart';
-// import 'package:client_app/utils/helpers/styles.dart';
-// import 'package:client_app/utils/widgets/bottom_sheet.dart';
-// import 'package:client_app/utils/widgets/tile.dart';
-// import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-// class RecentlyOpenedCategoryCarousel extends StatefulWidget {
-//   const RecentlyOpenedCategoryCarousel({
-//     super.key,
-//     required this.carouselItems,
-//   });
+import '../../application/home_bloc.dart';
+import '../../domain/taxonomy.dart';
+import '../../presentation/taxonomy_screen/taxonomy_children_screen.dart';
+import '../helpers/colors.dart';
+import '../helpers/constants.dart';
+import '../helpers/styles.dart';
+import 'bottom_sheet.dart';
+import 'cached_network_image.dart';
+import 'tile.dart';
 
-//   final List<Map<String, dynamic>> carouselItems;
+class RecentlyOpenedCategoryCarousel extends StatefulWidget {
+  const RecentlyOpenedCategoryCarousel({super.key});
 
-//   @override
-//   State<RecentlyOpenedCategoryCarousel> createState() => RecentlyOpenedCategoryCrousealState();
-// }
+  @override
+  State<RecentlyOpenedCategoryCarousel> createState() => RecentlyOpenedCategoryCrousealState();
+}
 
-// class RecentlyOpenedCategoryCrousealState extends State<RecentlyOpenedCategoryCarousel> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return AppTile(
-//       title: 'Recently Opened',
-//       spacing: verticalMargin12,
-//       child: ConstrainedBox(
-//         constraints: const BoxConstraints(maxHeight: 100),
-//         child: CarouselView(
-//           shrinkExtent: 12,
-//           shape: ContinuousRectangleBorder(
-//             borderRadius: BorderRadius.circular(24),
-//           ),
-//           itemExtent: 100,
-//           children: List.generate(widget.carouselItems.length, (index) {
-//             final Map<String, dynamic> carouselItem = widget.carouselItems[index];
-//             if (carouselItem['name'] == null && carouselItem['image_url'] == null) {
-//               return emptyWidget;
-//             }
-//             return Container(
-//               color: Colors.white,
-//               child: CategoryCard(
-//                 id: carouselItem['id']!.toString(),
-//                 name: carouselItem['name']!.toString(),
-//                 imageUrl: carouselItem['image_url']!.toString(),
-//                 carouselItems: widget.carouselItems,
-//               ),
-//             );
-//           }),
-//         ),
-//       ),
-//     );
-//   }
-// }
+class RecentlyOpenedCategoryCrousealState extends State<RecentlyOpenedCategoryCarousel> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state.isLoading) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          );
+        }
 
-// class CategoryPanel extends StatefulWidget {
-//   const CategoryPanel({super.key, required this.carouselItems});
+        if (state.taxonomies.isEmpty || state.hasError) {
+          return emptyWidget;
+        }
 
-//   final List<Map<String, dynamic>> carouselItems;
+        final List<Taxonomy> taxonomies = state.taxonomies;
+        return AppTile(
+          title: 'Recently Opened',
+          spacing: verticalMargin12,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxHeight: 100),
+            child: CarouselView(
+              onTap: (int index) => context.push(
+                TaxonomyChildrenScreen.routeName,
+                extra: {
+                  TaxonomyChildrenScreen.taxonomyIdKey: taxonomies[index].id,
+                  TaxonomyChildrenScreen.taxonomyObjectKey: taxonomies[index],
+                },
+              ),
+              shrinkExtent: 12,
+              shape: ContinuousRectangleBorder(
+                borderRadius: BorderRadius.circular(24),
+              ),
+              itemExtent: 100,
+              children: List.generate(state.carouselItems.length, (index) {
+                final Taxonomy taxonomy = taxonomies[index];
 
-//   @override
-//   State<CategoryPanel> createState() => _CategoryPanelState();
-// }
+                return ColoredBox(
+                  color: whiteColor,
+                  child: CategoryCard(
+                    taxonomy: taxonomy,
+                    taxonomies: state.taxonomies,
+                  ),
+                );
+              }),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
 
-// class _CategoryPanelState extends State<CategoryPanel> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return AppTile(
-//       title: 'Categories',
-//       spacing: verticalMargin12,
-//       child: Container(
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           borderRadius: BorderRadius.circular(12),
-//         ),
-//         child: CategoryGrid(
-//           carouselItems: widget.carouselItems,
-//         ),
-//       ),
-//     );
-//   }
-// }
+class CategoryPanel extends StatefulWidget {
+  const CategoryPanel({super.key});
 
-// class CategoryGrid extends StatelessWidget {
-//   const CategoryGrid({
-//     super.key,
-//     required this.carouselItems,
-//     this.showAll = false,
-//   });
+  @override
+  State<CategoryPanel> createState() => _CategoryPanelState();
+}
 
-//   final bool showAll;
-//   final List<Map<String, dynamic>> carouselItems;
+class _CategoryPanelState extends State<CategoryPanel> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        if (state.isLoading) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          );
+        }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return GridView.builder(
-//       physics: const NeverScrollableScrollPhysics(),
-//       shrinkWrap: true,
-//       itemCount: showAll
-//           ? carouselItems.length
-//           : carouselItems.length > 6 //
-//               ? 6
-//               : carouselItems.length,
-//       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//         crossAxisSpacing: 48,
-//         crossAxisCount: 3,
-//         mainAxisSpacing: 8,
-//       ),
-//       itemBuilder: (_, int index) {
-//         final Map<String, dynamic> carouselItem = carouselItems[index];
-//         if (carouselItem['name'] == null && carouselItem['image_url'] == null) {
-//           return emptyWidget;
-//         }
+        if (state.taxonomies.isEmpty || state.hasError) {
+          return emptyWidget;
+        }
 
-//         if (carouselItems.length > 6 && index == 5 && !showAll) {
-//           return CategoryCard(
-//             id: carouselItem['id']!.toString(),
-//             name: 'More',
-//             imageUrl: 'https://img.icons8.com/fluency/48/connection-status-off.png',
-//             carouselItems: carouselItems,
-//           );
-//         }
-//         return CategoryCard(
-//           id: carouselItem['id']!.toString(),
-//           name: carouselItem['name']!.toString(),
-//           imageUrl: carouselItem['image_url']!.toString(),
-//           carouselItems: carouselItems,
-//         );
-//       },
-//     );
-//   }
-// }
+        return AppTile(
+          title: 'Categories',
+          spacing: verticalMargin12,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: CategoryGrid(
+              taxonomies: state.taxonomies,
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
 
-// class CategoryCard extends StatelessWidget {
-//   const CategoryCard({
-//     super.key,
-//     required this.id,
-//     required this.name,
-//     required this.imageUrl,
-//     required this.carouselItems,
-//   });
+class CategoryGrid extends StatelessWidget {
+  const CategoryGrid({
+    super.key,
+    required this.taxonomies,
+    this.showAll = false,
+  });
 
-//   final String id;
-//   final String name;
-//   final String imageUrl;
-//   final List<Map<String, dynamic>> carouselItems;
+  final bool showAll;
+  final List<Taxonomy> taxonomies;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: verticalPadding8 + horizontalPadding8,
-//       child: InkWell(
-//         onTap: () {
-//           if (name.toLowerCase() == 'more') {
-//             bottomSheetHelper(
-//               context,
-//               (context) {
-//                 return Padding(
-//                   padding: verticalPadding4,
-//                   child: CategoryGrid(
-//                     showAll: true,
-//                     carouselItems: carouselItems,
-//                   ),
-//                 );
-//               },
-//             );
-//           } else {
-//             diContainer<AppNavigator>().goToCategoryPage(context, id);
-//           }
-//         },
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.center,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Image.network(
-//               imageUrl,
-//               height: 36,
-//               width: 36,
-//             ),
-//             verticalMargin8,
-//             Text(
-//               name,
-//               style: TextStyles.regular1,
-//               overflow: TextOverflow.clip,
-//               softWrap: false,
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: showAll
+          ? taxonomies.length
+          : taxonomies.length > 6 //
+              ? 6
+              : taxonomies.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisSpacing: 48,
+        crossAxisCount: 3,
+        mainAxisSpacing: 8,
+      ),
+      itemBuilder: (_, int index) {
+        final Taxonomy taxonomy = taxonomies[index];
+
+        final bool showMore = taxonomies.length > 6 && index == 5 && !showAll;
+
+        return CategoryCard(
+          taxonomy: taxonomy,
+          taxonomies: taxonomies,
+          hasShowMore: showMore,
+        );
+      },
+    );
+  }
+}
+
+class CategoryCard extends StatelessWidget {
+  const CategoryCard({
+    super.key,
+    required this.taxonomy,
+    required this.taxonomies,
+    this.hasShowMore = false,
+  });
+
+  final Taxonomy taxonomy;
+  final List<Taxonomy> taxonomies;
+  final bool hasShowMore;
+
+  @override
+  Widget build(BuildContext context) {
+    const double placeholderSize = 36.0;
+    const String showMoreIconUrl = 'https://img.icons8.com/fluency/48/connection-status-off.png';
+    final Widget placeholder = Container(
+      width: placeholderSize,
+      height: placeholderSize,
+      decoration: BoxDecoration(
+        color: placeholderGreyColor,
+        borderRadius: BorderRadius.circular(placeholderSize / 2),
+      ),
+    );
+
+    return Padding(
+      padding: verticalPadding8 + horizontalPadding8,
+      child: InkWell(
+        onTap: () {
+          if (hasShowMore) {
+            bottomSheetHelper(
+              backgroundColor: fullScreenWhiteColor,
+              context,
+              (context) {
+                return Padding(
+                  padding: verticalPadding4,
+                  child: CategoryGrid(
+                    showAll: true,
+                    taxonomies: taxonomies,
+                  ),
+                );
+              },
+            );
+          } else {
+            context.push(
+              TaxonomyChildrenScreen.routeName,
+              extra: {
+                TaxonomyChildrenScreen.taxonomyIdKey: taxonomy.id,
+                TaxonomyChildrenScreen.taxonomyObjectKey: taxonomy,
+              },
+            );
+          }
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (taxonomy.iconUrl == null) ...[
+              placeholder,
+            ] else ...[
+              CachedImage(
+                url: hasShowMore ? showMoreIconUrl : taxonomy.iconUrl!,
+                width: placeholderSize,
+                height: placeholderSize,
+                placeholder: placeholder,
+                errorWidget: placeholder,
+              ),
+            ],
+            verticalMargin8,
+            Text(
+              hasShowMore ? 'Show More' : taxonomy.translatedName(context),
+              style: TextStyles.regular1,
+              overflow: TextOverflow.clip,
+              softWrap: false,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
