@@ -16,14 +16,13 @@ class _MarketingCarouselState extends State<MarketingCarousel> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     _getBanners();
   }
 
-  _getBanners() async {
-    List<Map<String, dynamic>> banners =
+  void _getBanners() async {
+    final List<Map<String, dynamic>> banners =
         await FirestoreService.readAll(collectionName: 'home_banners');
 
     if (banners.isNotEmpty) {

@@ -30,7 +30,7 @@ class _AppTileState extends State<AppTile> {
     return Padding(
       padding: widget.horizontalPadding != null
           ? topPadding8 + horizontalPadding12
-          : topPadding8 + horizontalPadding24,
+          : topPadding8 + horizontalPadding16 + verticalPadding4,
       child: Container(
         padding: widget.horizontalPadding,
         color: widget.cardColor == null ? Colors.transparent : Colors.white,

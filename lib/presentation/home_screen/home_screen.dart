@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+// import '../../application/firebase.dart';
+// import '../../env/data.dart';
+import '../../application/home_bloc.dart';
+import '../../application/listeners/location_listener.dart';
 import '../../application/user/auth/auth_service.dart';
 import '../../di/di_container.dart';
 import '../../domain/user_profile.dart';
+import '../../utils/helpers/colors.dart';
 import '../../utils/helpers/constants.dart';
+import '../../utils/helpers/enums.dart';
 import '../../utils/helpers/styles.dart';
+import '../../utils/widgets/atoms/input_text.dart';
+import '../../utils/widgets/category_crousel.dart';
+import 'widgets/marketing_carousel.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -13,9 +23,13 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 248, 248, 255),
-      body: const HomeBody(),
+    return BlocProvider(
+      create: (context) => diContainer<HomeBloc>() //
+        ..add(const HomeEvent.init()),
+      child: const Scaffold(
+        backgroundColor: fullScreenWhiteColor,
+        body: HomeBody(),
+      ),
     );
   }
 }
@@ -25,78 +39,161 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return const SafeArea(
       child: SingleChildScrollView(
         child: Column(
           children: [
-            FutureBuilder<UserProfile>(
-              future: diContainer<AuthService>().getUserProfile(),
-              builder: (context, snapshot) {
-                final String? firstName = snapshot.data?.firstName;
-                return Column(
-                  children: [
-                    Padding(
-                      padding: horizontalPadding24 + verticalPadding8 + topPadding4,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.network(
-                                'https://img.icons8.com/tiny-color/16/marker.png',
-                              ),
-                              horizontalMargin8,
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Home',
-                                    style: TextStyles.semiBold2,
-                                  ),
-                                  Text(
-                                    'Vpo Khera Dabar...',
-                                    style: TextStyles.regular1,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          firstName != null && firstName.isNotEmpty
-                              ? Container(
-                                  height: 32,
-                                  width: 32,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFe7f5ff),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      firstName[0].toUpperCase(),
-                                      style: TextStyles.semiBold5!.copyWith(
-                                        color: const Color(0xFF1971c2),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : emptyWidget,
-                        ],
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
-            // const Search(),
-            // const MarketingCarousel(),
-            // RecentlyOpenedCategoryCarousel(
-            //   carouselItems: state.categories,
-            // ),
-            // CategoryPanel(
-            //   carouselItems: state.categories,
+            HomePageAppBarSection(),
+            Search(),
+            MarketingCarousel(),
+            RecentlyOpenedCategoryCarousel(),
+            CategoryPanel(),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     FirestoreService.createMany(
+            //       collectionName: 'categories',
+            //       dataList: mockCategoriesData,
+            //     );
+            //   },
+            //   child: const Text('Create'),
             // ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class HomePageAppBarSection extends StatelessWidget {
+  const HomePageAppBarSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Padding(
+          padding: horizontalPadding24 + verticalPadding8 + topPadding4,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              UserLocationWidget(),
+              NameInitialBadge(),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class UserLocationWidget extends StatelessWidget {
+  const UserLocationWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        return StreamBuilder<String?>(
+          stream: diContainer<LocationListener>().currentLocationStream,
+          builder: (context, snapshot) {
+            // Display an icon and a label if there's an error or no data
+            if (snapshot.hasError || !snapshot.hasData) {
+              return _buildLocationRow('Home');
+            }
+
+            final String? currentLocation = snapshot.data;
+            return _buildLocationRow('Home', location: currentLocation);
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildLocationRow(String label, {String? location}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: location != null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      children: [
+        const Icon(
+          Icons.location_on,
+          color: redColor,
+        ),
+        horizontalMargin8,
+        Column(
+          crossAxisAlignment:
+              location != null ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              style: TextStyles.semiBold1,
+            ),
+            if (location != null)
+              SizedBox(
+                width: 200,
+                child: Text(
+                  location,
+                  style: TextStyles.regular0,
+                  overflow: TextOverflow.clip,
+                ),
+              ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class NameInitialBadge extends StatelessWidget {
+  const NameInitialBadge({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<UserProfile>(
+      future: diContainer<AuthService>().getUserProfile(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final String? firstName = snapshot.requireData.firstName;
+          if (firstName != null) {
+            return Container(
+              height: 32,
+              width: 32,
+              decoration: const BoxDecoration(
+                color: Color(0xFFe7f5ff),
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  firstName[0].toUpperCase(),
+                  style: TextStyles.semiBold5!.copyWith(
+                    color: const Color(0xFF1971c2),
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+        return emptyWidget;
+      },
+    );
+  }
+}
+
+class Search extends StatelessWidget {
+  const Search({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: verticalPadding8 + horizontalPadding24,
+      child: const Column(
+        children: [
+          InputText(
+            size: InputSize.extraSmall,
+            label: '#Explore new places, food nearby you...',
+            prefixIcon: Icons.search_rounded,
+            maxLines: 1,
+          ),
+        ],
       ),
     );
   }
@@ -407,26 +504,7 @@ class DetailsScreen extends StatelessWidget {
 //   }
 // }
 
-// class Search extends StatelessWidget {
-//   const Search({super.key});
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Padding(
-//       padding: verticalPadding8 + horizontalPadding24,
-//       child: const Column(
-//         children: [
-//           InputText(
-//             size: InputSize.extraSmall,
-//             label: '#Explore new places, food nearby you...',
-//             prefixIcon: Icons.search_rounded,
-//             maxLines: 1,
-//           )
-//         ],
-//       ),
-//     );
-//   }
-// }
 
 // class PopularRoomsAroundYou extends StatelessWidget {
 //   const PopularRoomsAroundYou({super.key});
