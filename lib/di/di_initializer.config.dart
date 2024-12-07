@@ -15,6 +15,8 @@ import 'package:client_app/application/listeners/location_listener.dart'
 import 'package:client_app/application/listeners/user_profile_listener.dart'
     as _i615;
 import 'package:client_app/application/splash_bloc.dart' as _i761;
+import 'package:client_app/application/taxonomies/blocs/taxonomy_item_listing_bloc.dart'
+    as _i315;
 import 'package:client_app/application/user/auth/bloc/sign_in_bloc.dart'
     as _i568;
 import 'package:client_app/di/di_app_module.dart' as _i548;
@@ -43,6 +45,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i568.SignInBloc>(() => _i568.SignInBloc());
     gh.factory<_i761.SplashBloc>(() => _i761.SplashBloc());
     gh.factory<_i911.AddUserDetailsBloc>(() => _i911.AddUserDetailsBloc());
+    gh.factory<_i315.TaxonomyItemListingState>(
+        () => _i315.TaxonomyItemListingState());
     gh.factory<_i760.DashboardBloc>(() => _i760.DashboardBloc());
     gh.singleton<_i615.UserProfileListener>(() => _i615.UserProfileListener());
     gh.singleton<_i910.LocationListener>(() => _i910.LocationListener());
@@ -51,6 +55,14 @@ extension GetItInjectableX on _i174.GetIt {
         () => dIAppModule.key);
     gh.lazySingleton<_i59.FirebaseAuth>(() => dIAppModule.firebaseAuth);
     gh.lazySingleton<_i116.GoogleSignIn>(() => dIAppModule.googleSignIn);
+    gh.factoryParam<_i315.TaxonomyItemListingBloc, String, dynamic>((
+      taxonomyId,
+      _,
+    ) =>
+        _i315.TaxonomyItemListingBloc(
+          gh<_i315.TaxonomyItemListingState>(),
+          taxonomyId,
+        ));
     return this;
   }
 }

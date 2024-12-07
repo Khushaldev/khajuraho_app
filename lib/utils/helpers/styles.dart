@@ -124,7 +124,7 @@ class TextStyles {
   static TextStyle _createBaseTextStyle(TextWeight weight, TextSize size,
       {Color? color, double? lineHeight, bool underline = false}) {
     final fontSize = _fontSizes[size]!;
-    return GoogleFonts.poppins(
+    return GoogleFonts.notoSans(
       color: color,
       fontWeight: _fontWeights[weight]!,
       fontSize: fontSize,
