@@ -1,11 +1,11 @@
 {
-    "name": "client_app",
-    "short_name": "client_app",
+    "name": "khajuraho",
+    "short_name": "khajuraho",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Khajuraho, a travel companion app",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

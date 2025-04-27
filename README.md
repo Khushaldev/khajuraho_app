@@ -1,6 +1,6 @@
-# client_app
+# khajuraho
 
-A new Flutter project.
+Khajuraho, a travel companion app
 
 ## Getting Started
 
