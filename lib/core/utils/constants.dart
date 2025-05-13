@@ -6,6 +6,14 @@ abstract class Constants {
   static const String appBuildNumber = '1';
 }
 
+abstract class AssetPath {
+  //icons
+  static const String googleSVG = 'lib/resources/icons/google_icon.svg';
+
+  //images
+  static const String loginBgPNG = 'lib/resources/images/login_bg.png';
+}
+
 abstract class FilePath {
   static const String translations = 'lib/resources/translations';
   static const String transactionCategoryMLModel = 'lib/resources/ml_model/model.tflite';

@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
-import '../../utils/type_def/map_type_def.dart';
-
 class DioExceptionHandler {
   static String handleException({required DioException error}) {
     String errorMessage = 'An unexpected error occurred. Please try again.';
@@ -12,7 +10,7 @@ class DioExceptionHandler {
     if (error.response != null) {
       final errorResponseData = error.response?.data;
 
-      if (errorResponseData != null && errorResponseData is Json) {
+      if (errorResponseData != null && errorResponseData is Map<String, dynamic>) {
         try {
           switch (error.response?.statusCode) {
             case 400:
@@ -25,16 +23,13 @@ class DioExceptionHandler {
               errorMessage = _handleServerError(errorResponseData);
               break;
             default:
-              errorMessage = error.response?.data['message'] ??
-                  errorResponseData['message'] ??
+              errorMessage = error.response?.data['message'] as String? ??
+                  errorResponseData['message'] as String? ??
                   'An error occurred.';
           }
         } catch (e, st) {
           if (kDebugMode) {
-            errorMessage = 'Format exception or decryption error. Please try again. $e $st';
-          } else {
-            errorMessage =
-                'We are unable to process your request at the moment. Please try again later.';
+            errorMessage = '$errorMessage $e $st';
           }
         }
       }
@@ -51,26 +46,26 @@ class DioExceptionHandler {
     return errorMessage;
   }
 
-  static String _handleBadRequest(Json data) {
-    if (data['errors'] != null && data['errors'] is List && data['errors'].isNotEmpty) {
+  static String _handleBadRequest(Map<String, dynamic> data) {
+    if (data['errors'] != null && data['errors'] is List && (data['errors'] as List).isNotEmpty) {
       return (data['errors'] as List).join(', ');
     } else if (data['message'] != null) {
-      return data['message'];
+      return data['message'] as String;
     } else {
       return 'Invalid request. Please check your input.';
     }
   }
 
-  static String _handleUnauthorized(Json data) {
+  static String _handleUnauthorized(Map<String, dynamic> data) {
     if (data['message'] != null) {
-      return data['message'];
+      return data['message'] as String;
     }
     return 'Unauthorized access. Please login again.';
   }
 
-  static String _handleServerError(Json data) {
+  static String _handleServerError(Map<String, dynamic> data) {
     if (data['message'] != null) {
-      return data['message'];
+      return data['message'] as String;
     }
     return 'Internal server error. Please try again later.';
   }

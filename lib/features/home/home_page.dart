@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:khajuraho/core/app_config/cubit/app_config_cubit.dart';
+import 'package:khajuraho/core/services/firebase/firebase_service.dart';
+import 'package:khajuraho/core/services/local_storage/local_storage_key.dart';
 import 'package:khajuraho/core/utils/extensions/theme_extension.dart';
-import 'package:khajuraho/theme/colors.dart';
-
-import 'widgets/add_expense_form.dart';
-import 'widgets/spent_amount_card.dart';
-import 'widgets/time_period_chips.dart';
-import '../../shared/widgets/spacing.dart';
-import '../../core/app_config/cubit/app_config_cubit.dart';
+import 'package:khajuraho/di/di_container.dart';
+import 'package:khajuraho/features/home/widgets/spent_amount_card.dart';
+import 'package:khajuraho/features/home/widgets/time_period_chips.dart';
+import 'package:khajuraho/shared/widgets/spacing.dart';
 
 @RoutePage()
 class HomePage extends StatelessWidget {
@@ -19,10 +19,14 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: ElevatedButton(
-          onPressed: () {
-            _openAddExpenseBottomSheet(context);
-          },
-          child: Text('Add Expense')),
+        onPressed: () {
+          FirebaseService.logout();
+          di.storage.put(LSKey.user, null);
+          di.storage.put(LSKey.tokens, null);
+          // _openAddExpenseBottomSheet(context);
+        },
+        child: Text('Add Expense'),
+      ),
       appBar: AppBar(
         centerTitle: false,
         title: Text(
@@ -53,36 +57,6 @@ class HomePage extends StatelessWidget {
           SpentAmountCard(),
         ],
       ),
-    );
-  }
-
-  void _openAddExpenseBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      isDismissible: true,
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: context.theme.brightness == Brightness.light
-          ? AppColors.lightBackground
-          : AppColors.darkBackground,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(12.0),
-          topRight: Radius.circular(12.0),
-        ),
-      ),
-      builder: (context) {
-        return DraggableScrollableSheet(
-          snap: true,
-          expand: false,
-          minChildSize: 0.3,
-          maxChildSize: 0.88,
-          initialChildSize: 0.88,
-          snapAnimationDuration: Duration(milliseconds: 800),
-          builder: (context, scrollController) {
-            return const AddExpenseForm();
-          },
-        );
-      },
     );
   }
 }

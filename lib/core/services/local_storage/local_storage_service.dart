@@ -1,187 +1,174 @@
-// ignore_for_file: invalid_annotation_target
-
 import 'dart:async';
-
-import 'package:flutter/foundation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import '../../../dto/time_period_model/time_period.dart';
-import '../../../dto/transaction_category_model/transaction_category.dart';
-import '../../../dto/transaction_model/transaction.dart';
-import '../../utils/type_def/map_type_def.dart';
-import 'db_keys.dart';
+// TODO: remove type casting using [as] keyword
 
-part 'local_storage_service.freezed.dart';
-part 'local_storage_service.g.dart';
+class HiveTTLWrapper {
+  HiveTTLWrapper({required this.value, this.expiry});
 
-enum LoginType { email, google, facebook, faceId }
-
-abstract class LocalStorageService {
-  LocalStorageService._();
-
-  static late final String boxName;
-  static late final Box box;
-
-  static AppCache? cache;
-
-  // Stream for real-time cache updates
-  static final _cacheStreamController = StreamController<AppCache>.broadcast();
-  static Stream<AppCache> get cacheStream => _cacheStreamController.stream;
-
-  static final _lock = Completer<void>();
-
-  // Stream subscription for box changes
-  static StreamSubscription<BoxEvent>? _boxSubscription;
-
-  /// Initialize Hive and open the specified box
-  static Future<void> init(String name) async {
-    if (!_lock.isCompleted) {
-      boxName = name;
-      await Hive.initFlutter();
-      await _safeOpenBox();
-
-      final Json convertedData = _convertDynamicValue(box.toMap());
-      cache = AppCache.fromJson(convertedData);
-      // logConsole(cache?.toJson(), label: 'Cached Data');
-
-      // Watch for box changes and update the cache stream
-      _boxSubscription = box.watch().listen((event) {
-        _updateCache();
-      });
-
-      _lock.complete();
-    } else {
-      await _lock.future;
-    }
+  factory HiveTTLWrapper.fromMap(Map<dynamic, dynamic> map) {
+    return HiveTTLWrapper(
+      value: map['value'],
+      expiry: map['expiry'] != null //
+          ? DateTime.parse(map['expiry'] as String)
+          : null,
+    );
   }
 
-  static Future<void> _updateCache() async {
-    try {
-      final Json updatedData = _convertDynamicValue(box.toMap());
-      cache = AppCache.fromJson(updatedData);
-      _cacheStreamController.add(cache!);
-      // logConsole(
-      //   cache?.toJson(),
-      //   label: '${DateTime.now()} Cache updated',
-      //   print: false,
-      // );
-    } catch (_) {}
-  }
+  final dynamic value;
+  final DateTime? expiry;
 
-  /// Open a box safely (reopen if not already open)
-  static Future<void> _safeOpenBox() async {
-    if (!Hive.isBoxOpen(boxName)) {
-      box = await Hive.openBox(boxName);
-    }
-  }
+  bool get isExpired => expiry != null && DateTime.now().isAfter(expiry!);
 
-  /// Get a value of type `T` from the box
-  static Future<dynamic> get<T>(String key) async {
-    await _safeOpenBox();
-    final result = box.get(key);
-    if (result == null) return null;
-    return _convertDynamicValue(result);
-  }
-
-  /// Put a value of type `T` into the box
-  static Future<void> put<T>(String key, T value) async {
-    await _safeOpenBox();
-    await box.put(key, value);
-    await _updateCache();
-  }
-
-  static Future<void> putMany<T>(List<(String, T)> kV) async {
-    await _safeOpenBox();
-    for (final val in kV) {
-      await box.put(val.$1, val.$2);
-    }
-    await _updateCache();
-  }
-
-  /// Bulk put multiple key-value pairs into the box
-  static Future<void> putAll(Json value) async {
-    await _safeOpenBox();
-    await box.putAll(value);
-  }
-
-  /// Clear all data from the box
-  static Future<void> clear() async {
-    await _safeOpenBox();
-    await box.clear();
-  }
-
-  /// Clear all data from the box
-  static Future<void> deleteOne({required String key}) async {
-    await _safeOpenBox();
-    await box.delete(key);
-  }
-
-  static Future<void> deleteMany<T>(List<String> keys) async {
-    await _safeOpenBox();
-    for (final key in keys) {
-      await box.delete(key);
-    }
-  }
-
-  /// Close the Hive box
-  static Future<void> close() async {
-    if (Hive.isBoxOpen(boxName)) {
-      await box.close();
-    }
-  }
-
-  /// Delete the current box
-  static Future<void> deleteBox() async {
-    if (Hive.isBoxOpen(boxName)) {
-      await box.deleteFromDisk();
-    }
-  }
-
-  /// Delete all Hive boxes
-  static Future<void> deleteAllBoxes() async {
-    await Hive.deleteFromDisk();
-  }
-
-  /// Dispose resources and streams
-  static Future<void> dispose() async {
-    await close();
-    await _boxSubscription?.cancel();
-    await _cacheStreamController.close();
-  }
-
-  static dynamic _convertDynamicValue(dynamic value) {
-    if (value is Map) {
-      return value.map<String, dynamic>((k, v) {
-        dynamic val = v;
-        if (v is Map || v is List) {
-          val = _convertDynamicValue(v);
-        }
-        return MapEntry(k.toString(), val);
-      });
-    } else if (value is List) {
-      return List.from(
-        value.map((e) {
-          dynamic val = e;
-          if (e is Map || e is List) {
-            val = _convertDynamicValue(e);
-          }
-          return val;
-        }),
-      );
-    }
-
-    return value;
-  }
+  Map<String, dynamic> toMap() => {
+        'value': value,
+        'expiry': expiry?.toIso8601String(),
+      };
 }
 
-@freezed
-abstract class AppCache with _$AppCache {
-  const factory AppCache({
-    @JsonKey(name: DBKeys.categories) @Default([]) List<TransactionCategory> categories,
-    @JsonKey(name: DBKeys.timePeriods) @Default([]) List<TimePeriod> timePeriods,
-    @JsonKey(name: DBKeys.transactions) @Default([]) List<Transaction> transactions,
-  }) = _AppCache;
+class HiveStorageService {
+  HiveStorageService._internal();
+  factory HiveStorageService() => _instance;
+  static final HiveStorageService _instance = HiveStorageService._internal();
 
-  factory AppCache.fromJson(Map<String, dynamic> json) => _$AppCacheFromJson(json);
+  static const String _boxName = 'app_storage';
+
+  late final Box<dynamic> _box;
+  final StreamController<Map<String, dynamic>> _controller = StreamController.broadcast();
+
+  Stream<Map<String, dynamic>> get stream => _controller.stream;
+
+  Future<void> init() async {
+    await Hive.initFlutter();
+    _box = await Hive.openBox(_boxName);
+    _cleanupExpired();
+    _emitValidData();
+  }
+
+  Future<void> put(
+    String key,
+    dynamic value, {
+    Duration? ttl,
+  }) async {
+    final wrapper = HiveTTLWrapper(
+      value: value,
+      expiry: ttl != null ? DateTime.now().add(ttl) : null,
+    );
+    await _box.put(key, wrapper.toMap());
+    _emitValidData();
+  }
+
+  Future<void> putAll<T>(Map<String, T> entries, {Duration? ttl}) async {
+    final DateTime? expiry = ttl != null ? DateTime.now().add(ttl) : null;
+    final map = entries.map(
+      (key, value) => MapEntry(
+        key,
+        HiveTTLWrapper(value: value, expiry: expiry).toMap(),
+      ),
+    );
+    await _box.putAll(map);
+    _emitValidData();
+  }
+
+  Map<String, dynamic>? safeCastToStringMap(dynamic raw) {
+    if (raw is Map) {
+      return Map<String, dynamic>.from(raw);
+    }
+
+    return null;
+  }
+
+  dynamic get(String key) {
+    final raw = _box.get(key);
+    if (raw == null || raw is! Map) {
+      return null;
+    }
+
+    final stringMap = safeCastToStringMap(raw);
+    if (stringMap == null) {
+      return null;
+    }
+
+    final wrapper = HiveTTLWrapper.fromMap(stringMap);
+    if (wrapper.isExpired) {
+      _box.delete(key);
+      _emitValidData();
+      return null;
+    }
+
+    return wrapper.value;
+  }
+
+  Map<String, T> getAll<T>() {
+    final map = <String, T>{};
+    final keysToDelete = <String>[];
+
+    for (final entry in _box.toMap().entries) {
+      final key = entry.key as String;
+      final value = entry.value as Map<dynamic, dynamic>;
+      final wrapper = HiveTTLWrapper.fromMap(value);
+      if (wrapper.isExpired) {
+        keysToDelete.add(key);
+      } else if (wrapper.value is T) {
+        map[key] = wrapper.value as T;
+      }
+    }
+
+    if (keysToDelete.isNotEmpty) {
+      _box.deleteAll(keysToDelete);
+    }
+
+    _emitValidData();
+
+    return map;
+  }
+
+  Future<void> delete(String key) async {
+    await _box.delete(key);
+    _emitValidData();
+  }
+
+  Future<void> deleteMany(List<String> keys) async {
+    await _box.deleteAll(keys);
+    _emitValidData();
+  }
+
+  Future<void> deleteAll() async {
+    await _box.clear();
+    _emitValidData();
+  }
+
+  Future<void> close() async {
+    await _box.close();
+    await _controller.close();
+  }
+
+  void _emitValidData() {
+    final validMap = <String, dynamic>{};
+    for (final entry in _box.toMap().entries) {
+      final key = entry.key as String;
+      final value = entry.value as Map<dynamic, dynamic>;
+      final wrapper = HiveTTLWrapper.fromMap(value);
+      if (!wrapper.isExpired) {
+        validMap[key] = wrapper.value;
+      }
+    }
+    _controller.add(validMap);
+  }
+
+  void _cleanupExpired() {
+    final keysToDelete = <String>[];
+    for (final entry in _box.toMap().entries) {
+      final key = entry.key as String;
+      final value = entry.value as Map<dynamic, dynamic>;
+      final wrapper = HiveTTLWrapper.fromMap(value);
+      if (wrapper.isExpired) {
+        keysToDelete.add(key);
+      }
+    }
+    if (keysToDelete.isNotEmpty) {
+      _box.deleteAll(keysToDelete);
+      _emitValidData();
+    }
+  }
 }

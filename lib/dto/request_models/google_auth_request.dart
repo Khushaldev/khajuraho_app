@@ -4,7 +4,7 @@ part 'google_auth_request.freezed.dart';
 part 'google_auth_request.g.dart';
 
 @freezed
-abstract class GoogleAuthRequest with _$GoogleAuthRequest {
+sealed class GoogleAuthRequest with _$GoogleAuthRequest {
   const GoogleAuthRequest._();
 
   // ignore: invalid_annotation_target

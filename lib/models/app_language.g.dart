@@ -16,5 +16,5 @@ Map<String, dynamic> _$AppLanguageToJson(_AppLanguage instance) =>
     <String, dynamic>{
       'code': instance.code,
       'name': instance.name,
-      'countryCode': instance.countryCode,
+      if (instance.countryCode case final value?) 'countryCode': value,
     };

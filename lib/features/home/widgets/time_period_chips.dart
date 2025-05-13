@@ -24,11 +24,13 @@ class TimePeriodChips extends StatelessWidget {
       TimePeriod.thisYear: LocaleKeys.time_period_this_year.tr(),
     };
     return ValueListenableBuilder<TimePeriod>(
-        valueListenable: selectedTimePeriod,
-        builder: (context, value, _) {
-          return Padding(
-            padding: horizontalPadding16,
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      valueListenable: selectedTimePeriod,
+      builder: (context, value, _) {
+        return Padding(
+          padding: horizontalPadding16,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
               for (final mapEntry in timePeriodMap.entries)
                 AppChip(
                   title: mapEntry.value,
@@ -42,8 +44,10 @@ class TimePeriodChips extends StatelessWidget {
                     }
                   },
                 ),
-            ]),
-          );
-        });
+            ],
+          ),
+        );
+      },
+    );
   }
 }

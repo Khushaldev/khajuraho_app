@@ -36,10 +36,10 @@ class AmountTextField extends StatelessWidget {
           controller: controller,
           keyboardType: TextInputType.numberWithOptions(decimal: true),
           validator: (value) {
-            if (value == null || value.isEmpty) return "Amount is required";
+            if (value == null || value.isEmpty) return 'Amount is required';
             final amount = double.tryParse(value);
-            if (amount == null) return "Enter a valid number";
-            if (amount <= 0) return "Amount must be > 0";
+            if (amount == null) return 'Enter a valid number';
+            if (amount <= 0) return 'Amount must be > 0';
             return null;
           },
         ),

@@ -1,7 +1,7 @@
+import 'package:khajuraho/core/services/dio/dio_service.dart';
+import 'package:khajuraho/dto/request_models/google_auth_request.dart';
 import 'package:khajuraho/dto/response_models/google_auth_response.dart';
-
-import '../../../dto/request_models/google_auth_request.dart';
-import '../dio/dio_service.dart';
+import 'package:khajuraho/dto/result.dart';
 
 class AuthService {
   AuthService(this._dioService) {
@@ -12,16 +12,14 @@ class AuthService {
 
   final DioService _dioService;
 
-  static final String loginWithGooglePath = '/auth/google';
+  static final String googleAuthPath = '/v1/auth/google';
 
-  Future<(GoogleAuthResponse?, AppError?)> loginWithGoogle({
+  Future<Result<GoogleAuthResponse, AppError>> loginWithGoogle({
     required GoogleAuthRequest request,
   }) async {
-    final result = await _dioService.post<GoogleAuthResponse>(
-      loginWithGooglePath,
+    return _dioService.post<GoogleAuthResponse>(
+      googleAuthPath,
       data: request.toJson(),
     );
-
-    return result;
   }
 }

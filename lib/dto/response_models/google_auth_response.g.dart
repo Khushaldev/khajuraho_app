@@ -17,7 +17,7 @@ Map<String, dynamic> _$GoogleAuthResponseToJson(_GoogleAuthResponse instance) =>
     <String, dynamic>{
       'success': instance.success,
       'message': instance.message,
-      'data': instance.data,
+      'data': instance.data.toJson(),
     };
 
 _GoogleAuthData _$GoogleAuthDataFromJson(Map<String, dynamic> json) =>
@@ -28,6 +28,6 @@ _GoogleAuthData _$GoogleAuthDataFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$GoogleAuthDataToJson(_GoogleAuthData instance) =>
     <String, dynamic>{
-      'user': instance.user,
-      'tokens': instance.tokens,
+      'user': instance.user.toJson(),
+      'tokens': instance.tokens.toJson(),
     };

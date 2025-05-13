@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../theme/colors.dart';
+
 class FullPageLoader extends StatelessWidget {
   const FullPageLoader({
     super.key,
@@ -29,8 +31,8 @@ class FullPageLoader extends StatelessWidget {
           ),
           Center(
             child: CircularProgressIndicator(
-                // color: ColorConstants.pigeePrimaryBlue,
-                ),
+              color: AppColors.neutralWhite,
+            ),
           ),
         ],
       ],

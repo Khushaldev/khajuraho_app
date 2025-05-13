@@ -140,20 +140,76 @@ class AuthFullPageLoading implements AuthState {
 /// @nodoc
 
 class AuthSuccess implements AuthState {
-  const AuthSuccess();
+  const AuthSuccess({required this.response});
+
+  final GoogleAuthResponse response;
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $AuthSuccessCopyWith<AuthSuccess> get copyWith =>
+      _$AuthSuccessCopyWithImpl<AuthSuccess>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is AuthSuccess);
+        (other.runtimeType == runtimeType &&
+            other is AuthSuccess &&
+            (identical(other.response, response) ||
+                other.response == response));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, response);
 
   @override
   String toString() {
-    return 'AuthState.authSuccess()';
+    return 'AuthState.authSuccess(response: $response)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $AuthSuccessCopyWith<$Res>
+    implements $AuthStateCopyWith<$Res> {
+  factory $AuthSuccessCopyWith(
+          AuthSuccess value, $Res Function(AuthSuccess) _then) =
+      _$AuthSuccessCopyWithImpl;
+  @useResult
+  $Res call({GoogleAuthResponse response});
+
+  $GoogleAuthResponseCopyWith<$Res> get response;
+}
+
+/// @nodoc
+class _$AuthSuccessCopyWithImpl<$Res> implements $AuthSuccessCopyWith<$Res> {
+  _$AuthSuccessCopyWithImpl(this._self, this._then);
+
+  final AuthSuccess _self;
+  final $Res Function(AuthSuccess) _then;
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? response = null,
+  }) {
+    return _then(AuthSuccess(
+      response: null == response
+          ? _self.response
+          : response // ignore: cast_nullable_to_non_nullable
+              as GoogleAuthResponse,
+    ));
+  }
+
+  /// Create a copy of AuthState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GoogleAuthResponseCopyWith<$Res> get response {
+    return $GoogleAuthResponseCopyWith<$Res>(_self.response, (value) {
+      return _then(_self.copyWith(response: value));
+    });
   }
 }
 

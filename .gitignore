@@ -49,5 +49,8 @@ app.*.map.json
 
 /lib/resources/translations
 /lib/firebase_options.dart
+/lib/generated/
 
 firebase.json
+
+/env/

@@ -4,7 +4,7 @@ part 'time_period.freezed.dart';
 part 'time_period.g.dart';
 
 @freezed
-abstract class TimePeriod with _$TimePeriod {
+sealed class TimePeriod with _$TimePeriod {
   const factory TimePeriod({
     required String periodId,
     required String name,

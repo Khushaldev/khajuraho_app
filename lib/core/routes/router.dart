@@ -14,6 +14,9 @@ class AppRouter extends RootStackRouter {
   final List<AutoRoute> routes = [
     AutoRoute(
       path: '/',
+      page: SplashRoute.page,
+    ),
+    AutoRoute(
       page: LoginRoute.page,
     ),
     AutoRoute(
@@ -24,7 +27,7 @@ class AppRouter extends RootStackRouter {
           page: EmptyShellRoute('home-tab'),
           children: [
             AutoRoute(path: '', page: HomeRoute.page),
-            AutoRoute(path: 'add-expense', page: AddExpenseRoute.page),
+            // AutoRoute(path: 'add-expense', page: AddExpenseRoute.page),
           ],
         ),
         AutoRoute(

@@ -6,11 +6,12 @@ import '../../../generated/locale_keys.g.dart';
 import '../../../shared/widgets/spacing.dart';
 
 class SpentAmountCard extends StatelessWidget {
-  const SpentAmountCard(
-      {super.key,
-      this.userCurrency = '\$',
-      this.selectedTimePeriod = 'Today',
-      this.selectedAmount = 0});
+  const SpentAmountCard({
+    super.key,
+    this.userCurrency = '\$',
+    this.selectedTimePeriod = 'Today',
+    this.selectedAmount = 0,
+  });
 
   final String userCurrency;
   final String selectedTimePeriod;

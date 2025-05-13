@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Throttler {
-  Throttler({required this.delay});
+  Throttler();
 
-  final Duration delay;
+  final Duration delay = const Duration(milliseconds: 500);
   bool _isThrottling = false;
 
   void run(VoidCallback action) {

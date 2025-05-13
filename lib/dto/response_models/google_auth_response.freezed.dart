@@ -107,9 +107,10 @@ class _$GoogleAuthResponseCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _GoogleAuthResponse implements GoogleAuthResponse {
+class _GoogleAuthResponse extends GoogleAuthResponse {
   const _GoogleAuthResponse(
-      {required this.success, required this.message, required this.data});
+      {required this.success, required this.message, required this.data})
+      : super._();
   factory _GoogleAuthResponse.fromJson(Map<String, dynamic> json) =>
       _$GoogleAuthResponseFromJson(json);
 
@@ -311,8 +312,8 @@ class _$GoogleAuthDataCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _GoogleAuthData implements GoogleAuthData {
-  const _GoogleAuthData({required this.user, required this.tokens});
+class _GoogleAuthData extends GoogleAuthData {
+  const _GoogleAuthData({required this.user, required this.tokens}) : super._();
   factory _GoogleAuthData.fromJson(Map<String, dynamic> json) =>
       _$GoogleAuthDataFromJson(json);
 

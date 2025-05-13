@@ -3,18 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:khajuraho/core/utils/log_console.dart';
-
-import '../../../models/app_language.dart';
+import 'package:khajuraho/models/app_language.dart';
 
 part 'app_config_cubit.freezed.dart';
 part 'app_config_cubit.g.dart';
 
 class AppConfigCubit extends HydratedCubit<AppConfigState> {
   AppConfigCubit()
-      : super(AppConfigState(
-          languageCode: AppLanguage.defaultLocale.languageCode,
-          isDarkTheme: false,
-        ));
+      : super(
+          AppConfigState(
+            languageCode: AppLanguage.defaultLocale.languageCode,
+            isDarkTheme: false,
+          ),
+        );
 
   void setLanguage({
     required BuildContext context,

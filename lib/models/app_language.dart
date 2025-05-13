@@ -5,7 +5,7 @@ part 'app_language.freezed.dart';
 part 'app_language.g.dart';
 
 @freezed
-abstract class AppLanguage with _$AppLanguage {
+sealed class AppLanguage with _$AppLanguage {
   const factory AppLanguage({
     required String code,
     required String name,

@@ -7,7 +7,9 @@ part 'google_auth_response.freezed.dart';
 part 'google_auth_response.g.dart';
 
 @freezed
-abstract class GoogleAuthResponse with _$GoogleAuthResponse {
+sealed class GoogleAuthResponse with _$GoogleAuthResponse {
+  const GoogleAuthResponse._();
+
   const factory GoogleAuthResponse({
     required bool success,
     required String message,
@@ -19,7 +21,9 @@ abstract class GoogleAuthResponse with _$GoogleAuthResponse {
 }
 
 @freezed
-abstract class GoogleAuthData with _$GoogleAuthData {
+sealed class GoogleAuthData with _$GoogleAuthData {
+  const GoogleAuthData._();
+
   const factory GoogleAuthData({
     required User user,
     required AuthTokens tokens,

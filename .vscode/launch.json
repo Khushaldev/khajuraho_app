@@ -1,0 +1,63 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "inputs": [
+        {
+            "id": "option",
+            "type": "pickString",
+            "description": "buildMode",
+            "options": [
+                "debug",
+                "profile",
+                "release"
+            ],
+        },
+    ],
+ 
+    "configurations": [
+        {
+            "name": "dev ${input:option}",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "${input:option}",
+            "args": [
+                "--dart-define",
+                "ENV_PATH=env/.env.dev"
+            ],
+        },
+        {
+            "name": "prod ${input:option}",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "${input:option}",
+            "args": [
+                "--dart-define",
+                "ENV_PATH=env/.env.prod",
+            ],
+        },
+        {
+            "name": "dev ${input:option} without impeller",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "${input:option}",
+            "args": [
+                "--no-enable-impeller",
+                "--dart-define",
+                "ENV_PATH=env/.env.dev",
+            ],
+        },
+        {
+            "name": "prod ${input:option} without impeller",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "${input:option}",
+            "args": [
+                "--no-enable-impeller",
+                "--dart-define",
+                "ENV_PATH=env/.env.prod",
+            ],
+        },
+    ]
+}

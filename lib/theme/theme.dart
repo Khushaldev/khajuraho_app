@@ -1,158 +1,142 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:khajuraho/theme/colors.dart';
 
-import 'colors.dart';
-import 'typography.dart';
+// app_theme.dart
+// Defines the light and dark ThemeData using the AppColors.
 
 class AppTheme {
-  // Get light theme
-  static ThemeData getLightTheme(BuildContext context) {
+  // Private constructor to prevent instantiation
+  AppTheme._();
+  // --- Light Theme ---
+  static ThemeData get lightTheme {
     return ThemeData(
-      useMaterial3: true,
       brightness: Brightness.light,
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.lightPrimary,
-        primaryContainer: AppColors.lightPrimary,
-        secondary: AppColors.lightSecondary,
-        secondaryContainer: AppColors.lightSecondaryVariant,
-        surface: AppColors.lightSurface,
-        error: AppColors.lightError,
-        onPrimary: AppColors.lightOnPrimary,
-        onSecondary: AppColors.lightOnSecondary,
-        onSurface: AppColors.lightOnSurface,
-        onError: AppColors.lightOnError,
+      primaryColor: AppColors.primaryMedium,
+      scaffoldBackgroundColor: AppColors.backgroundLight,
+      colorScheme: const ColorScheme(
+        brightness: Brightness.light,
+        primary: AppColors.primaryMedium, // Main interactive color
+        onPrimary: AppColors.neutralWhite, // Text/icons on primary color
+        secondary: AppColors.primaryLight, // Accent color
+        onSecondary: AppColors.primaryDark, // Text/icons on secondary color
+        error: AppColors.error,
+        onError: AppColors.neutralWhite, // Text/icons on error color
+        surface: AppColors.neutralWhite, // Card/dialog backgrounds
+        onSurface: AppColors.neutralBlack, // Text/icons on surface
       ),
-      scaffoldBackgroundColor: AppColors.lightBackground,
-      cardColor: AppColors.lightCardColor,
-      dividerColor: AppColors.lightDividerColor,
-      textTheme: AppTypography.getTextTheme(context, false),
       appBarTheme: const AppBarTheme(
-        elevation: 0,
-        backgroundColor: AppColors.lightPrimary,
-        foregroundColor: AppColors.lightOnPrimary,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
+        backgroundColor: AppColors.primaryMedium, // App bar background
+        foregroundColor: AppColors.neutralWhite, // App bar title/icons
+        elevation: 4.0,
+        iconTheme: IconThemeData(color: AppColors.neutralWhite),
+        titleTextStyle: TextStyle(
+          color: AppColors.neutralWhite,
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.lightPrimary,
-        foregroundColor: AppColors.lightOnPrimary,
-      ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.lightSurface,
-        selectedItemColor: AppColors.lightPrimary,
-        unselectedItemColor: Colors.grey,
+      buttonTheme: ButtonThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        buttonColor: AppColors.primaryMedium, // Default button color
+        textTheme: ButtonTextTheme.primary,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: AppColors.lightOnPrimary,
-          backgroundColor: AppColors.lightPrimary,
+          backgroundColor: AppColors.primaryMedium, // Button background
+          foregroundColor: AppColors.neutralWhite, // Button text/icon
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.lightPrimary,
-          side: const BorderSide(color: AppColors.lightPrimary),
-        ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: AppColors.primaryMedium,
+        foregroundColor: AppColors.neutralWhite,
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: AppColors.lightPrimary,
-        ),
+      // Define other theme properties like textTheme, inputDecorationTheme etc.
+      textTheme: const TextTheme(
+        // Define specific text styles if needed
+        bodyLarge: TextStyle(color: AppColors.neutralBlack),
+        bodyMedium: TextStyle(color: AppColors.neutralBlack),
+        // ... other styles
       ),
-      inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.primaryMedium),
+        ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.lightPrimary, width: 2.0),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.primaryMedium, width: 2.0),
         ),
-      ),
-      cardTheme: CardTheme(
-        color: AppColors.lightCardColor,
-        elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-      expansionTileTheme: const ExpansionTileThemeData(
-        textColor: AppColors.lightPrimary,
-        iconColor: AppColors.lightPrimary,
+        labelStyle: const TextStyle(color: AppColors.primaryMedium),
       ),
     );
   }
 
-  // Get dark theme
-  static ThemeData getDarkTheme(BuildContext context) {
+  // --- Dark Theme ---
+  static ThemeData get darkTheme {
     return ThemeData(
-      useMaterial3: true,
       brightness: Brightness.dark,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.darkPrimary,
-        primaryContainer: AppColors.darkPrimaryVariant,
-        secondary: AppColors.darkSecondary,
-        secondaryContainer: AppColors.darkSecondaryVariant,
-        surface: AppColors.darkSurface,
-        error: AppColors.darkError,
-        onPrimary: AppColors.darkOnPrimary,
-        onSecondary: AppColors.darkOnSecondary,
-        onSurface: AppColors.darkOnSurface,
-        onError: AppColors.darkOnError,
+      primaryColor: AppColors.primaryDark, // Darker primary for overall theme
+      scaffoldBackgroundColor: AppColors.backgroundDark,
+      colorScheme: const ColorScheme(
+        brightness: Brightness.dark,
+        primary: AppColors.primaryLightAccent, // Lighter blue for interactive elements
+        onPrimary: AppColors.backgroundDark, // Text/icons on primary color
+        secondary: AppColors.primaryMedium, // Accent color
+        onSecondary: AppColors.neutralWhite, // Text/icons on secondary color
+        error: AppColors.error,
+        onError: AppColors.neutralWhite, // Text/icons on error color
+        surface: AppColors.primaryDark, // Card/dialog backgrounds (slightly lighter than bg)
+        onSurface: AppColors.neutralWhite, // Text/icons on surface
       ),
-      scaffoldBackgroundColor: AppColors.darkBackground,
-      cardColor: AppColors.darkCardColor,
-      dividerColor: AppColors.darkDividerColor,
-      textTheme: AppTypography.getTextTheme(context, true),
       appBarTheme: const AppBarTheme(
-        elevation: 0,
-        backgroundColor: AppColors.darkSurface,
-        foregroundColor: AppColors.darkOnSurface,
-        systemOverlayStyle: SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.light,
+        backgroundColor: AppColors.primaryDark, // App bar background
+        foregroundColor: AppColors.neutralWhite, // App bar title/icons
+        elevation: 4.0,
+        iconTheme: IconThemeData(color: AppColors.neutralWhite),
+        titleTextStyle: TextStyle(
+          color: AppColors.neutralWhite,
+          fontSize: 20,
+          fontWeight: FontWeight.w500,
         ),
       ),
-      floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        backgroundColor: AppColors.darkPrimary,
-        foregroundColor: AppColors.darkOnPrimary,
-      ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.darkSurface,
-        selectedItemColor: AppColors.darkPrimary,
-        unselectedItemColor: Colors.grey,
+      buttonTheme: ButtonThemeData(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        buttonColor: AppColors.primaryLightAccent, // Use the lighter accent for buttons
+        textTheme: ButtonTextTheme.primary,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          foregroundColor: AppColors.darkOnPrimary,
-          backgroundColor: AppColors.darkPrimary,
+          backgroundColor: AppColors.primaryLightAccent, // Button background
+          foregroundColor: AppColors.backgroundDark, // Button text/icon
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
       ),
-      outlinedButtonTheme: OutlinedButtonThemeData(
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.darkPrimary,
-          side: const BorderSide(color: AppColors.darkPrimary),
-        ),
+      floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: AppColors.primaryLightAccent,
+        foregroundColor: AppColors.backgroundDark,
       ),
-      textButtonTheme: TextButtonThemeData(
-        style: TextButton.styleFrom(
-          foregroundColor: AppColors.darkPrimary,
-        ),
+      // Define other theme properties like textTheme, inputDecorationTheme etc.
+      textTheme: const TextTheme(
+        // Define specific text styles if needed
+        bodyLarge: TextStyle(color: AppColors.neutralWhite),
+        bodyMedium: TextStyle(color: AppColors.neutralWhite),
+        // ... other styles
       ),
-      inputDecorationTheme: const InputDecorationTheme(
-        border: OutlineInputBorder(),
+      inputDecorationTheme: InputDecorationTheme(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.primaryLightAccent),
+        ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: AppColors.darkPrimary, width: 2.0),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: AppColors.primaryLightAccent, width: 2.0),
         ),
-      ),
-      cardTheme: CardTheme(
-        color: AppColors.darkCardColor,
-        elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-      ),
-      expansionTileTheme: const ExpansionTileThemeData(
-        textColor: AppColors.darkPrimary,
-        iconColor: AppColors.darkPrimary,
+        labelStyle: const TextStyle(color: AppColors.primaryLightAccent),
+        hintStyle: TextStyle(color: AppColors.neutralWhite),
+        // Ensure helper/error text is visible
+        helperStyle: TextStyle(color: AppColors.neutralWhite),
+        errorStyle: const TextStyle(color: AppColors.error),
       ),
     );
   }

@@ -1,62 +1,61 @@
 import 'package:flutter/material.dart';
 
+// app_colors.dart
+// Defines the color constants extracted from the provided image palette
+// and includes additional standard UI colors.
+
 class AppColors {
-  static const Color lightPrimary = Color(0xFF536DFE);
-  static const Color lightPrimaryVariant = Color(0xFF3D5AFE);
-  static const Color lightSecondary = Color(0xFF03DAC6);
-  static const Color lightSecondaryVariant = Color(0xFF018786);
-  static const Color lightBackground = Color(0xFFFAFAFA);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightError = Color(0xFFB00020);
-  static const Color lightOnPrimary = Color(0xFFFFFFFF);
-  static const Color lightOnSecondary = Color(0xFF000000);
-  static const Color lightOnBackground = Color(0xFF000000);
-  static const Color lightOnSurface = Color(0xFF000000);
-  static const Color lightOnError = Color(0xFFFFFFFF);
+  // Private constructor to prevent instantiation
+  AppColors._();
+  // --- Primary Blues ---
+  // Darkest blue, suitable for dark backgrounds or primary dark elements
+  static const Color primaryDark = Color(0xFF1A4D7A);
+  // Medium blue, good for primary actions or light theme app bars
+  static const Color primaryMedium = Color(0xFF2E6AA2);
+  // Lightest blue, suitable for accents or highlighting in dark mode
+  static const Color primaryLight = Color(0xFFA8D4F0);
+  // A slightly brighter light blue for better visibility as accent in dark mode
+  static const Color primaryLightAccent = Color(0xFF8BCBF4);
 
-  // Light Theme Additional Colors
-  static const Color lightCardColor = Color(0xFFFFFFFF);
-  static const Color lightDividerColor = Color(0xFFE0E0E0);
-  static const Color lightShadowColor = Color(0x1A000000);
-  static const Color lightExpenseColor = Color(0xFFFF5252);
-  static const Color lightIncomeColor = Color(0xFF4CAF50);
-  static const Color lightNeutralColor = Color(0xFF9E9E9E);
+  // --- Neutrals ---
+  // Pure white, for text on dark backgrounds or light theme backgrounds
+  static const Color neutralWhite = Color(0xFFFFFFFF);
+  // Pure black, for text on light backgrounds
+  static const Color neutralBlack = Color(0xFF000000);
+  // Very dark blue, suitable for dark theme backgrounds
+  static const Color backgroundDark = Color(0xFF0D273E);
+  // Off-white, an alternative for light theme backgrounds if pure white is too stark
+  static const Color backgroundLight = Color(0xFFF5FAFF); // Slightly bluish white
 
-  // Dark Theme Colors
-  static const Color darkPrimary = Color(0xFF3D5AFE);
-  static const Color darkPrimaryVariant = Color(0xFF1E1E1E);
-  static const Color darkSecondary = Color(0xFF03DAC6);
-  static const Color darkSecondaryVariant = Color(0xFF018786);
-  static const Color darkBackground = Color(0xFF121212);
-  static const Color darkSurface = Color(0xFF1E1E1E);
-  static const Color darkError = Color(0xFFCF6679);
-  static const Color darkOnPrimary = Color(0xFFFFFFFF);
-  static const Color darkOnSecondary = Color(0xFFFFFFFF);
-  static const Color darkOnBackground = Color(0xFFFFFFFF);
-  static const Color darkOnSurface = Color(0xFFFFFFFF);
-  static const Color darkOnError = Color(0xFF000000);
+  // --- Greys ---
+  // Light Greys (for light theme dividers, disabled states, subtle text)
+  static const Color greyLight = Color(0xFFF0F0F0); // Very light grey
+  static const Color greyMediumLight = Color(0xFFD5D8DC); // Light grey
+  static const Color greyMedium = Color(0xFFADB5BD); // Medium grey
 
-  // Dark Theme Additional Colors
-  static const Color darkCardColor = Color(0xFF2C2C2C);
-  static const Color darkDividerColor = Color(0xFF424242);
-  static const Color darkShadowColor = Color(0x52000000);
-  static const Color darkExpenseColor = Color(0xFFFF6B6B);
-  static const Color darkIncomeColor = Color(0xFF66BB6A);
-  static const Color darkNeutralColor = Color(0xFFBDBDBD);
+  // Dark Greys (for dark theme dividers, disabled states, subtle text)
+  static const Color greyMediumDark = Color(0xFF6C757D); // Medium-dark grey
+  static const Color greyDark = Color(0xFF495057); // Dark grey
+  static const Color greyVeryDark = Color(0xFF343A40); // Very dark grey (alt surface)
 
-  // Chart & Category Colors (common for both themes)
-  static const List<Color> categoryColors = [
-    Color(0xFF536DFE), // Primary
-    Color(0xFFFFA726), // Orange
-    Color(0xFF66BB6A), // Green
-    Color(0xFFEF5350), // Red
-    Color(0xFF26C6DA), // Cyan
-    Color(0xFFAB47BC), // Purple
-    Color(0xFFFFEE58), // Yellow
-    Color(0xFF8D6E63), // Brown
-    Color(0xFF78909C), // Blue Grey
-    Color(0xFF7E57C2), // Deep Purple
-    Color(0xFFFF7043), // Deep Orange
-    Color(0xFF42A5F5), // Blue
-  ];
+  // --- Semantic Colors (Standard) ---
+  // Success color for positive feedback
+  static const Color success = Color(0xFF28A745); // Green
+  static const Color successLight = Color(0xFFD4EDDA); // Light green background
+  static const Color successDark = Color(0xFF155724); // Dark green text/icon
+
+  // Warning color for cautionary messages
+  static const Color warning = Color(0xFFFFC107); // Yellow/Amber
+  static const Color warningLight = Color(0xFFFFF3CD); // Light yellow background
+  static const Color warningDark = Color(0xFF856404); // Dark yellow text/icon
+
+  // Error color for errors and negative feedback
+  static const Color error = Color(0xFFDC3545); // Red
+  static const Color errorLight = Color(0xFFF8D7DA); // Light red background
+  static const Color errorDark = Color(0xFF721C24); // Dark red text/icon
+
+  // Info color for informational messages
+  static const Color info = Color(0xFF17A2B8); // Teal/Cyan
+  static const Color infoLight = Color(0xFFD1ECF1); // Light cyan background
+  static const Color infoDark = Color(0xFF0C5460); // Dark cyan text/icon
 }

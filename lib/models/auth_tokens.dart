@@ -4,7 +4,7 @@ part 'auth_tokens.freezed.dart';
 part 'auth_tokens.g.dart';
 
 @freezed
-abstract class AuthTokens with _$AuthTokens {
+sealed class AuthTokens with _$AuthTokens {
   const AuthTokens._();
 
   // ignore: invalid_annotation_target
