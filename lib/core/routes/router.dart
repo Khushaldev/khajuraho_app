@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 
-import 'router.gr.dart';
+import 'package:khajuraho/core/routes/router.gr.dart';
 
 @AutoRouterConfig(
   generateForDir: ['lib/'],
